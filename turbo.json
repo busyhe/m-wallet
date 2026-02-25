@@ -31,6 +31,10 @@
     }
   },
   "globalEnv": [
-    "NEXT_PUBLIC_GA_ID"
+    "NEXT_PUBLIC_GA_ID",
+    "NOTION_TOKEN",
+    "NOTION_DATABASE_ID",
+    "LOCK_PASSWORD",
+    "NODE_ENV"
   ]
 }
