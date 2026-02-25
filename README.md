@@ -1,228 +1,101 @@
-# Next.js Starter
+# M-Wallet
 
-A modern Next.js full-stack application boilerplate built with Turborepo monorepo architecture, integrating best practices and development tools.
+订阅费用管理工具，基于 Notion 数据驱动，Linear UI 风格。
 
 ## ✨ Features
 
-- 🚀 **Next.js 15** - Latest version of Next.js framework
-- ⚡ **Turbopack** - Ultra-fast development server
-- 🏗️ **Turborepo** - High-performance monorepo build system
-- 🎨 **Tailwind CSS** - Utility-first CSS framework
-- 🧩 **Radix UI** - High-quality headless UI components
-- 🌙 **Theme Toggle** - Built-in dark/light theme support
-- 📦 **pnpm** - Fast, disk space efficient package manager
-- 🔧 **TypeScript** - Type-safe development experience
-- 🎯 **ESLint** - Code quality checking
-- 💅 **Prettier** - Code formatting
-- 🪝 **Lefthook** - Git hooks management
-- 📝 **Changeset** - Version management and publishing
-
-## 🏗️ Project Structure
-
-```
-nextjs-starter/
-├── apps/
-│   └── web/                 # Next.js main application
-│       ├── app/            # App Router pages
-│       ├── components/     # Application-level components
-│       └── hooks/          # Custom hooks
-├── packages/
-│   ├── ui/                 # Shared UI component library
-│   │   ├── src/
-│   │   │   ├── components/ # Reusable components
-│   │   │   ├── hooks/      # UI hooks
-│   │   │   ├── lib/        # Utility functions
-│   │   │   └── styles/     # Global styles
-│   ├── eslint-config/      # Shared ESLint configuration
-│   └── typescript-config/  # Shared TypeScript configuration
-└── ...
-```
+- � **订阅管理** - 新建 / 编辑 / 删除订阅，55+ 预置服务可选
+- 📊 **花费统计** - 月度 / 年度 / 全部花费统计，按分类细分
+- 🔄 **灵活周期** - 月付 / 季付 / 年付 / 买断 / 自定义周期
+- 🔐 **密码保护** - Cookie 方式的轻量访问控制
+- 🎯 **自定义排序** - 拖拽排序 / 按金额 / 按名称排序
+- 🌙 **暗色模式** - 浅色 / 深色 / 跟随系统
+- ✨ **微动画** - Linear 风格 UI，framer-motion 动画
+- �️ **Notion 驱动** - 数据存储在 Notion 数据库中
 
 ## 🛠️ Tech Stack
 
-### Frontend Framework
+- **Next.js 16** + React 19 + TypeScript
+- **TailwindCSS 4** + Linear UI 风格主题
+- **@notionhq/client** - Notion API 数据层
+- **@dnd-kit** - 拖拽排序
+- **framer-motion** - 动画
+- **Turborepo** + pnpm monorepo
 
-- **Next.js 15** - React full-stack framework
-- **React 19** - User interface library
-- **TypeScript** - Type safety
-
-### Styling
-
-- **Tailwind CSS 4** - CSS framework
-- **Radix UI** - Headless component library
-- **Lucide React** - Icon library
-- **next-themes** - Theme management
-
-### Development Tools
-
-- **Turborepo** - Monorepo build tool
-- **pnpm** - Package manager
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **Lefthook** - Git hooks
-
-### Utilities
-
-- **clsx** - Conditional classnames
-- **tailwind-merge** - Tailwind class merging
-- **class-variance-authority** - Component variant management
-- **Zod** - Data validation
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js >= 20
-- pnpm >= 10.4.1
+- pnpm >= 10
 
-### Installation
+### Setup
 
 ```bash
-# Install pnpm (if not already installed)
-npm install -g pnpm
-
-# Clone the project
-git clone <your-repo-url>
-cd nextjs-starter
-
 # Install dependencies
 pnpm install
+
+# Configure environment
+cp apps/web/.env.example apps/web/.env.local
+# Edit .env.local with your Notion credentials
 ```
+
+### Environment Variables
+
+| Variable             | Description                              |
+| -------------------- | ---------------------------------------- |
+| `NOTION_TOKEN`       | Notion Integration Token                 |
+| `NOTION_DATABASE_ID` | Notion Database ID                       |
+| `LOCK_PASSWORD`      | Access password (leave empty to disable) |
+
+### Notion Database Schema
+
+Create a Notion database with these properties:
+
+| Property        | Type      | Description                                             |
+| --------------- | --------- | ------------------------------------------------------- |
+| Name            | title     | 订阅名称                                                |
+| Icon            | url       | 图标 URL                                                |
+| Price           | number    | 价格                                                    |
+| Currency        | select    | 货币 (CNY / USD)                                        |
+| Cycle           | select    | 周期 (monthly / quarterly / yearly / one-time / custom) |
+| CustomCycleDays | number    | 自定义周期天数                                          |
+| StartDate       | date      | 开始时间                                                |
+| EndDate         | date      | 结束时间                                                |
+| Description     | rich_text | 描述                                                    |
+| Category        | select    | 分类                                                    |
+| Position        | number    | 排序位置                                                |
+| Color           | select    | 品牌色                                                  |
 
 ### Development
 
 ```bash
-# Start development server
-pnpm dev
-
-# Build project
-pnpm build
-
-# Lint code
-pnpm lint
-
-# Format code
-pnpm format
-
-# Type check
-pnpm typecheck
+pnpm dev        # Start dev server
+pnpm build      # Production build
+pnpm lint       # Lint check
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to view the application.
+Visit [http://localhost:3000](http://localhost:3000)
 
-## 📦 Package Management
-
-### Adding Dependencies
-
-```bash
-# Add dependency to specific app
-pnpm add <package> --filter web
-
-# Add dependency to UI package
-pnpm add <package> --filter @workspace/ui
-
-# Add dev dependency to root
-pnpm add -D <package> -w
-```
-
-### Workspace Dependencies
-
-The project uses pnpm workspace to manage internal package dependencies:
-
-```json
-{
-  "dependencies": {
-    "@workspace/ui": "workspace:*"
-  }
-}
-```
-
-## 🎨 UI Components
-
-The UI component library is located in `packages/ui` and provides:
-
-- Base components (Button, Input, etc.)
-- Theme support
-- TypeScript type definitions
-- Tailwind CSS styling
-
-### Using Components
-
-```tsx
-import { Button } from '@workspace/ui/components/button'
-
-export default function Page() {
-  return (
-    <Button variant="default" size="md">
-      Click me
-    </Button>
-  )
-}
-```
-
-## 🔧 Configuration
-
-### ESLint
-
-The project uses shared ESLint configurations:
-
-- `@workspace/eslint-config/base` - Base configuration
-- `@workspace/eslint-config/next` - Next.js configuration
-- `@workspace/eslint-config/react-internal` - React internal configuration
-
-### TypeScript
-
-Shared TypeScript configurations:
-
-- `@workspace/typescript-config/base` - Base configuration
-- `@workspace/typescript-config/nextjs` - Next.js configuration
-- `@workspace/typescript-config/react-library` - React library configuration
-
-### Tailwind CSS
-
-The UI package provides global styles and Tailwind configuration that applications can use directly.
-
-## 📋 Scripts
-
-| Command          | Description              |
-| ---------------- | ------------------------ |
-| `pnpm dev`       | Start development server |
-| `pnpm build`     | Build all packages       |
-| `pnpm lint`      | Run ESLint checks        |
-| `pnpm format`    | Format code              |
-| `pnpm typecheck` | TypeScript type checking |
-| `pnpm changeset` | Create changeset         |
-| `pnpm release`   | Release new version      |
-
-## 🤝 Contributing
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Commit Convention
-
-The project uses [Conventional Commits](https://www.conventionalcommits.org/) specification:
+## � Project Structure
 
 ```
-feat: new feature
-fix: bug fix
-docs: documentation update
-style: code formatting
-refactor: code refactoring
-test: testing related
-chore: build tools or auxiliary tools changes
+m-wallet/
+├── apps/web/                # Next.js application
+│   ├── app/                 # Pages (/, /stats, /new, /settings)
+│   ├── components/          # UI components
+│   ├── lib/
+│   │   ├── actions/         # Server Actions (subscriptions, auth)
+│   │   ├── notion.ts        # Notion client
+│   │   ├── services.ts      # 55+ preset services
+│   │   └── types.ts         # TypeScript types
+│   └── config/              # Site config
+├── packages/
+│   ├── ui/                  # Shared UI (shadcn/ui)
+│   ├── eslint-config/       # ESLint config
+│   └── typescript-config/   # TypeScript config
 ```
 
 ## 📄 License
 
-[MIT License](LICENSE)
-
-## 🔗 Links
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Turborepo Documentation](https://turbo.build/repo/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Radix UI Documentation](https://www.radix-ui.com/primitives)
+[MIT](LICENSE)
