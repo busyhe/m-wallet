@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import type { Subscription } from '@/lib/types'
 import { formatPrice, formatNextBilling, getCycleLabel } from '@/lib/subscription-utils'
+import { ServiceIcon } from './service-icon'
 
 interface SubscriptionCardProps {
   subscription: Subscription
@@ -29,29 +30,7 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
         className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg"
         style={{ backgroundColor: `${color}15` }}
       >
-        {icon ? (
-          <img
-            src={icon}
-            alt={name}
-            className="w-5 h-5 object-contain"
-            crossOrigin="anonymous"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.style.display = 'none'
-              const parent = target.parentElement
-              if (parent) {
-                parent.textContent = name.charAt(0).toUpperCase()
-                parent.style.color = color
-                parent.style.fontWeight = '600'
-                parent.style.fontSize = '16px'
-              }
-            }}
-          />
-        ) : (
-          <span className="text-base font-semibold" style={{ color }}>
-            {name.charAt(0).toUpperCase()}
-          </span>
-        )}
+        <ServiceIcon icon={icon} name={name} color={color} size={20} />
       </div>
 
       {/* Info */}

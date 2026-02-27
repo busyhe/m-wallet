@@ -9,6 +9,7 @@ import { CYCLE_LABELS } from '@/lib/types'
 import { PRESET_SERVICES, getServiceCategories } from '@/lib/services'
 import { createSubscription, updateSubscription } from '@/lib/actions/subscriptions'
 import type { Subscription } from '@/lib/types'
+import { ServiceIcon } from './service-icon'
 
 interface SubscriptionFormProps {
   editData?: Subscription
@@ -78,8 +79,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
     }
 
     setSubmitting(false)
-    router.push('/')
-    router.refresh()
+    window.location.href = '/'
   }
 
   const updateField = <K extends keyof SubscriptionFormData>(key: K, value: SubscriptionFormData[K]) => {
@@ -167,25 +167,10 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-sm text-left transition-all"
                   >
                     <div
-                      className="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
+                      className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
                       style={{ backgroundColor: `${service.color}15` }}
                     >
-                      <img
-                        src={service.icon}
-                        alt={service.name}
-                        className="w-4.5 h-4.5 object-contain"
-                        crossOrigin="anonymous"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.style.display = 'none'
-                          const parent = target.parentElement
-                          if (parent) {
-                            parent.textContent = service.name.charAt(0)
-                            parent.style.color = service.color
-                            parent.style.fontWeight = '600'
-                          }
-                        }}
-                      />
+                      <ServiceIcon icon={service.icon} name={service.name} color={service.color} size={18} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{service.name}</p>
@@ -219,13 +204,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     className="flex items-center justify-center w-10 h-10 rounded-lg"
                     style={{ backgroundColor: `${form.color}15` }}
                   >
-                    {form.icon ? (
-                      <img src={form.icon} alt={form.name} className="w-5 h-5 object-contain" crossOrigin="anonymous" />
-                    ) : (
-                      <span className="text-base font-semibold" style={{ color: form.color }}>
-                        {form.name.charAt(0)}
-                      </span>
-                    )}
+                    <ServiceIcon icon={form.icon} name={form.name} color={form.color} size={20} />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{form.name}</p>

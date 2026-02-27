@@ -8,6 +8,7 @@ import { CYCLE_LABELS, CURRENCY_SYMBOLS } from '@/lib/types'
 import { formatPrice, formatNextBilling, getMonthlyEquivalent } from '@/lib/subscription-utils'
 import { deleteSubscription } from '@/lib/actions/subscriptions'
 import { format } from 'date-fns'
+import { ServiceIcon } from './service-icon'
 
 interface SubscriptionDetailProps {
   subscription: Subscription
@@ -67,13 +68,7 @@ export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, o
                     className="flex items-center justify-center w-12 h-12 rounded-xl"
                     style={{ backgroundColor: `${sub.color}15` }}
                   >
-                    {sub.icon ? (
-                      <img src={sub.icon} alt={sub.name} className="w-6 h-6 object-contain" crossOrigin="anonymous" />
-                    ) : (
-                      <span className="text-lg font-bold" style={{ color: sub.color }}>
-                        {sub.name.charAt(0)}
-                      </span>
-                    )}
+                    <ServiceIcon icon={sub.icon} name={sub.name} color={sub.color} size={24} />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-foreground">{sub.name}</h2>

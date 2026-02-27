@@ -44,7 +44,51 @@ export function formatNextBilling(sub: Subscription): string {
   return format(next, 'MM/dd')
 }
 
-// Calculate monthly equivalent cost
+// Get all billing dates for a subscription within a date range
+export function getBillingDatesInPeriod(sub: Subscription, start: Date, end: Date): Date[] {
+  if (sub.cycle === 'one-time') {
+    const purchaseDate = new Date(sub.startDate)
+    return purchaseDate >= start && purchaseDate <= end ? [purchaseDate] : []
+  }
+
+  const startDate = new Date(sub.startDate)
+  const endDate = sub.endDate ? new Date(sub.endDate) : null
+  const dates: Date[] = []
+
+  let current = startDate
+  while (current <= end) {
+    if (endDate && current > endDate) break
+
+    if (current >= start) {
+      dates.push(new Date(current))
+    }
+
+    switch (sub.cycle) {
+      case 'monthly':
+        current = addMonths(current, 1)
+        break
+      case 'quarterly':
+        current = addMonths(current, 3)
+        break
+      case 'yearly':
+        current = addYears(current, 1)
+        break
+      case 'custom':
+        current = addDays(current, sub.customCycleDays || 30)
+        break
+    }
+  }
+
+  return dates
+}
+
+// Calculate total cost for a subscription in a period
+export function getCostInPeriod(sub: Subscription, start: Date, end: Date): number {
+  const billingDates = getBillingDatesInPeriod(sub, start, end)
+  return billingDates.length * sub.price
+}
+
+/** @deprecated Use getCostInPeriod instead for actual spending calculation */
 export function getMonthlyEquivalent(sub: Subscription): number {
   switch (sub.cycle) {
     case 'monthly':
@@ -62,7 +106,7 @@ export function getMonthlyEquivalent(sub: Subscription): number {
   }
 }
 
-// Calculate yearly equivalent cost
+/** @deprecated Use getCostInPeriod instead for actual spending calculation */
 export function getYearlyEquivalent(sub: Subscription): number {
   return getMonthlyEquivalent(sub) * 12
 }
@@ -75,21 +119,30 @@ export function formatPrice(amount: number, currency: Currency = 'CNY'): string 
 
 // Calculate total monthly/yearly/all stats
 export function calculateStats(subscriptions: Subscription[]) {
-  const active = subscriptions.filter((s) => {
-    if (s.cycle === 'one-time') return true
-    if (s.endDate && isAfter(new Date(), new Date(s.endDate))) return false
-    return true
-  })
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59)
+  const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59)
 
-  const totalMonthly = active.reduce((sum, s) => sum + getMonthlyEquivalent(s), 0)
-  const totalYearly = active.reduce((sum, s) => sum + getYearlyEquivalent(s), 0)
-  const totalOneTime = active.filter((s) => s.cycle === 'one-time').reduce((sum, s) => sum + s.price, 0)
+  // Monthly stats: Actual payments in current month
+  const totalMonthly = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, startOfMonth, endOfMonth), 0)
+
+  // Yearly stats: Remaining payments from CURRENT DATE to end of year
+  // User said "之前花费不计算入内" (previous spending not included)
+  const totalYearlyRemaining = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, now, endOfYear), 0)
+
+  // Active count
+  const activeCount = subscriptions.filter((s) => {
+    if (s.cycle === 'one-time') return true
+    if (s.endDate && isAfter(now, new Date(s.endDate))) return false
+    return true
+  }).length
 
   return {
     totalMonthly,
-    totalYearly,
-    totalAll: totalYearly + totalOneTime,
-    count: active.length,
+    totalYearly: totalYearlyRemaining,
+    totalAll: totalYearlyRemaining, // Adjust based on need, here we use remaining yearly
+    count: activeCount,
     currency: 'CNY' as Currency
   }
 }

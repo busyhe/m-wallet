@@ -49,13 +49,13 @@ export default function HomePage() {
           transition={{ delay: 0.1 }}
           className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/10"
         >
-          <p className="text-xs text-muted-foreground mb-1">本月预估支出</p>
+          <p className="text-xs text-muted-foreground mb-1">本月实际支出</p>
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-bold text-foreground tabular-nums">{formatPrice(stats.totalMonthly)}</span>
           </div>
           <div className="flex gap-4 mt-3">
             <div>
-              <p className="text-[10px] text-muted-foreground">年度预估</p>
+              <p className="text-[10px] text-muted-foreground">年度剩余</p>
               <p className="text-sm font-medium text-foreground tabular-nums">{formatPrice(stats.totalYearly)}</p>
             </div>
             <div>

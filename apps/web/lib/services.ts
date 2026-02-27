@@ -1,7 +1,7 @@
 import type { PresetService } from '@/lib/types'
 
-// Preset subscription services with icons using simple-icons CDN
-const SI = (name: string) => `https://cdn.simpleicons.org/${name}`
+// Iconify slug helper for simple-icons
+const SI = (name: string) => `simple-icons:${name}`
 
 export const PRESET_SERVICES: PresetService[] = [
   // Streaming

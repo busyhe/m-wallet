@@ -2,7 +2,11 @@
 
 import notion, { databaseId } from '@/lib/notion'
 import type { Subscription, SubscriptionFormData, SubscriptionCycle, Currency } from '@/lib/types'
-import type { PageObjectResponse, CreatePageParameters } from '@notionhq/client/build/src/api-endpoints'
+import type {
+  PageObjectResponse,
+  CreatePageParameters,
+  QueryDataSourceResponse
+} from '@notionhq/client/build/src/api-endpoints'
 
 // Helper: cast properties for write operations
 type WriteProperties = CreatePageParameters['properties']
@@ -60,9 +64,12 @@ function parseSubscription(page: PageObjectResponse): Subscription {
 // Get all subscriptions
 export async function getSubscriptions(): Promise<Subscription[]> {
   try {
-    const response = await notion.dataSources.query({
-      data_source_id: databaseId,
-      sorts: [{ property: 'Position', direction: 'ascending' }]
+    const response = await notion.request<QueryDataSourceResponse>({
+      path: `databases/${databaseId}/query`,
+      method: 'post',
+      body: {
+        sorts: [{ property: 'Position', direction: 'ascending' }]
+      }
     })
     return response.results.filter((page): page is PageObjectResponse => 'properties' in page).map(parseSubscription)
   } catch (error) {
