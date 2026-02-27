@@ -7,6 +7,13 @@ export type Currency = 'CNY' | 'USD'
 // Sort mode for subscription list
 export type SortMode = 'custom' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
 
+// Bundled service within a subscription
+export interface BundledService {
+  name: string
+  icon: string
+  color: string
+}
+
 // Subscription data model
 export interface Subscription {
   id: string
@@ -22,6 +29,7 @@ export interface Subscription {
   category: string
   position: number
   color: string
+  bundledServices?: BundledService[]
 }
 
 // Form data for creating/updating subscription
@@ -37,6 +45,7 @@ export interface SubscriptionFormData {
   description: string
   category: string
   color: string
+  bundledServices?: BundledService[]
 }
 
 // Preset service definition

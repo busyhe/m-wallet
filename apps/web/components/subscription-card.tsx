@@ -36,7 +36,27 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground truncate">{name}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{nextBilling}</p>
+        {subscription.bundledServices && subscription.bundledServices.length > 0 ? (
+          <div className="flex items-center mt-1 -space-x-1.5">
+            {subscription.bundledServices.slice(0, 5).map((bs, i) => (
+              <div
+                key={`${bs.name}-${i}`}
+                className="flex items-center justify-center w-5 h-5 rounded-full border-2 border-card"
+                style={{ backgroundColor: `${bs.color}20`, zIndex: 5 - i }}
+                title={bs.name}
+              >
+                <ServiceIcon icon={bs.icon} name={bs.name} color={bs.color} size={10} />
+              </div>
+            ))}
+            {subscription.bundledServices.length > 5 && (
+              <span className="text-[10px] text-muted-foreground ml-1.5">
+                +{subscription.bundledServices.length - 5}
+              </span>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground mt-0.5">{nextBilling}</p>
+        )}
       </div>
 
       {/* Price */}

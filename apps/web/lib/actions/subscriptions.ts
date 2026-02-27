@@ -1,7 +1,7 @@
 'use server'
 
 import notion, { databaseId } from '@/lib/notion'
-import type { Subscription, SubscriptionFormData, SubscriptionCycle, Currency } from '@/lib/types'
+import type { Subscription, SubscriptionFormData, SubscriptionCycle, Currency, BundledService } from '@/lib/types'
 import type {
   PageObjectResponse,
   CreatePageParameters,
@@ -57,8 +57,21 @@ function parseSubscription(page: PageObjectResponse): Subscription {
     description: getRichText(props.Description),
     category: getSelectName(props.Category),
     position: getNumber(props.Position),
-    color: getSelectName(props.Color) || '#6366f1'
+    color: getSelectName(props.Color) || '#6366f1',
+    bundledServices: parseBundledServices(getRichText(props.BundledServices))
   }
+}
+
+// Parse bundled services JSON from rich_text
+function parseBundledServices(raw: string): BundledService[] | undefined {
+  if (!raw) return undefined
+  try {
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+  } catch {
+    /* ignore invalid JSON */
+  }
+  return undefined
 }
 
 // Get all subscriptions
@@ -102,6 +115,9 @@ export async function createSubscription(data: SubscriptionFormData): Promise<Su
     if (data.endDate) {
       properties.EndDate = { date: { start: data.endDate } }
     }
+    if (data.bundledServices?.length) {
+      properties.BundledServices = { rich_text: [{ text: { content: JSON.stringify(data.bundledServices) } }] }
+    }
 
     const response = await notion.pages.create({
       parent: { database_id: databaseId },
@@ -130,6 +146,11 @@ export async function updateSubscription(id: string, data: Partial<SubscriptionF
       properties.Description = { rich_text: [{ text: { content: data.description } }] }
     if (data.category !== undefined) properties.Category = { select: { name: data.category } }
     if (data.color !== undefined) properties.Color = { select: { name: data.color } }
+    if (data.bundledServices !== undefined) {
+      properties.BundledServices = {
+        rich_text: [{ text: { content: data.bundledServices.length ? JSON.stringify(data.bundledServices) : '' } }]
+      }
+    }
 
     await notion.pages.update({
       page_id: id,
