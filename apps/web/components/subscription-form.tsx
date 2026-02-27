@@ -40,6 +40,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
   })
 
   const categories = getServiceCategories()
+  const isInitialView = !searchQuery && !selectedCategory
 
   const filteredServices = useMemo(() => {
     let items = PRESET_SERVICES
@@ -115,79 +116,88 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="space-y-4"
+              className="flex flex-col h-[calc(100dvh-4rem)]"
             >
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="搜索服务..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-                />
-              </div>
-
-              {/* Category filter */}
-              <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-                    !selectedCategory ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'
-                  }`}
-                >
-                  全部
-                </button>
-                {categories.map((cat) => (
+              {/* Sticky search & category filter */}
+              <div className="shrink-0 space-y-3 pb-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="搜索服务..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+                <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat === selectedCategory ? null : cat)}
+                    onClick={() => setSelectedCategory(null)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-                      selectedCategory === cat
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-secondary'
+                      !selectedCategory ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'
                     }`}
                   >
-                    {cat}
+                    全部
                   </button>
-                ))}
-              </div>
-
-              {/* Service grid */}
-              <div className="grid grid-cols-2 gap-2">
-                {filteredServices.map((service, i) => (
-                  <motion.button
-                    key={service.name}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => handleSelectService(service)}
-                    className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-sm text-left transition-all"
-                  >
-                    <div
-                      className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
-                      style={{ backgroundColor: `${service.color}15` }}
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat === selectedCategory ? null : cat)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                        selectedCategory === cat
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:bg-secondary'
+                      }`}
                     >
-                      <ServiceIcon icon={service.icon} name={service.name} color={service.color} size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{service.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{service.category}</p>
-                    </div>
-                  </motion.button>
-                ))}
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Custom option */}
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={handleCustomService}
-                className="w-full p-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
-              >
-                + 自定义服务
-              </motion.button>
+              {/* Scrollable service grid */}
+              <div className="flex-1 overflow-y-auto space-y-3 pb-10 overscroll-contain">
+                <motion.div
+                  key={selectedCategory ?? '__all__'}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                  className="grid grid-cols-2 gap-2"
+                >
+                  {filteredServices.map((service, i) => {
+                    const stagger = isInitialView ? Math.min(i, 8) * 0.06 : 0
+                    return (
+                      <motion.button
+                        key={service.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: stagger, duration: 0.25 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => handleSelectService(service)}
+                        className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-sm text-left transition-all"
+                      >
+                        <div
+                          className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
+                          style={{ backgroundColor: `${service.color}15` }}
+                        >
+                          <ServiceIcon icon={service.icon} name={service.name} color={service.color} size={18} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{service.name}</p>
+                          <p className="text-[10px] text-muted-foreground">{service.category}</p>
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </motion.div>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleCustomService}
+                  className="w-full p-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                >
+                  + 自定义服务
+                </motion.button>
+              </div>
             </motion.div>
           ) : (
             <motion.div

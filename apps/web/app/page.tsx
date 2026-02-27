@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import type { Subscription } from '@/lib/types'
 import { getSubscriptions } from '@/lib/actions/subscriptions'
 import { formatPrice, calculateStats } from '@/lib/subscription-utils'
+import { AnimatedNumber } from '@/components/animated-number'
 import { SubscriptionList } from '@/components/subscription-list'
 import { SubscriptionDetail } from '@/components/subscription-detail'
 
@@ -62,20 +63,34 @@ export default function HomePage() {
         >
           <p className="text-xs text-muted-foreground mb-1">本月实际支出</p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold text-foreground tabular-nums">{formatPrice(stats.totalMonthly)}</span>
+            <AnimatedNumber
+              value={stats.totalMonthly}
+              format={formatPrice}
+              className="text-3xl font-bold text-foreground tabular-nums"
+            />
           </div>
           <div className="flex gap-4 mt-3">
             <div>
               <p className="text-[10px] text-muted-foreground">年度剩余</p>
-              <p className="text-sm font-medium text-foreground tabular-nums">{formatPrice(stats.totalYearly)}</p>
+              <AnimatedNumber
+                value={stats.totalYearly}
+                format={formatPrice}
+                className="text-sm font-medium text-foreground tabular-nums"
+              />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">活跃订阅</p>
-              <p className="text-sm font-medium text-foreground">{stats.count} 个</p>
+              <p className="text-sm font-medium text-foreground">
+                <AnimatedNumber value={stats.count} format={(n) => `${Math.round(n)} 个`} />
+              </p>
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">日均</p>
-              <p className="text-sm font-medium text-foreground tabular-nums">{formatPrice(stats.totalMonthly / 30)}</p>
+              <AnimatedNumber
+                value={stats.totalMonthly / 30}
+                format={formatPrice}
+                className="text-sm font-medium text-foreground tabular-nums"
+              />
             </div>
           </div>
         </motion.div>

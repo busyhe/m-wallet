@@ -10,9 +10,13 @@ const navItems = [
   { icon: Settings, label: '设置', href: '/settings' }
 ]
 
+const HIDDEN_PATHS = ['/new', '/edit']
+
 export function NavBar() {
   const router = useRouter()
   const pathname = usePathname()
+
+  if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40">
