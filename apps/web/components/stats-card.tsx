@@ -10,6 +10,7 @@ interface StatsCardProps {
   suffix?: string
   color?: string
   delay?: number
+  isInteger?: boolean
 }
 
 // Animated counter hook
@@ -40,7 +41,7 @@ function useAnimatedValue(target: number, duration = 1000) {
   return value
 }
 
-export function StatsCard({ label, amount, prefix = '¥', suffix, color, delay = 0 }: StatsCardProps) {
+export function StatsCard({ label, amount, prefix = '¥', suffix, color, delay = 0, isInteger }: StatsCardProps) {
   const animatedAmount = useAnimatedValue(amount, 1200)
 
   return (
@@ -54,7 +55,7 @@ export function StatsCard({ label, amount, prefix = '¥', suffix, color, delay =
       <div className="flex items-baseline gap-0.5">
         <span className="text-xs text-muted-foreground">{prefix}</span>
         <span className="text-xl font-bold tabular-nums" style={color ? { color } : undefined}>
-          {animatedAmount.toFixed(2)}
+          {isInteger ? Math.round(animatedAmount) : animatedAmount.toFixed(2)}
         </span>
         {suffix && <span className="text-xs text-muted-foreground ml-0.5">{suffix}</span>}
       </div>

@@ -2,12 +2,11 @@
 
 import { motion } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
-import { Home, BarChart3, Plus, Settings } from 'lucide-react'
+import { Home, BarChart3, Settings } from 'lucide-react'
 
 const navItems = [
   { icon: Home, label: '首页', href: '/' },
   { icon: BarChart3, label: '统计', href: '/stats' },
-  { icon: Plus, label: '新建', href: '/new', isAction: true },
   { icon: Settings, label: '设置', href: '/settings' }
 ]
 
@@ -22,19 +21,6 @@ export function NavBar() {
           {navItems.map((item) => {
             const isActive = pathname === item.href
             const Icon = item.icon
-
-            if (item.isAction) {
-              return (
-                <motion.button
-                  key={item.href}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => router.push(item.href)}
-                  className="flex items-center justify-center w-11 h-11 -mt-5 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                >
-                  <Icon className="w-5 h-5" />
-                </motion.button>
-              )
-            }
 
             return (
               <motion.button

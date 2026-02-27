@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Wallet } from 'lucide-react'
+import { Wallet, Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import type { Subscription } from '@/lib/types'
 import { getSubscriptions } from '@/lib/actions/subscriptions'
 import { formatPrice, calculateStats } from '@/lib/subscription-utils'
@@ -10,6 +11,7 @@ import { SubscriptionList } from '@/components/subscription-list'
 import { SubscriptionDetail } from '@/components/subscription-detail'
 
 export default function HomePage() {
+  const router = useRouter()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null)
@@ -34,12 +36,21 @@ export default function HomePage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 mb-6"
+          className="flex items-center justify-between mb-6"
         >
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
-            <Wallet className="w-4 h-4 text-primary" />
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+              <Wallet className="w-4 h-4 text-primary" />
+            </div>
+            <h1 className="text-lg font-semibold text-foreground">Wallet</h1>
           </div>
-          <h1 className="text-lg font-semibold text-foreground">M-Wallet</h1>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => router.push('/new')}
+            className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+          >
+            <Plus className="w-5 h-5" />
+          </motion.button>
         </motion.div>
 
         {/* Monthly stats card */}
