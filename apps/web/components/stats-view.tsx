@@ -20,11 +20,10 @@ export function StatsView({ subscriptions }: StatsViewProps) {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59)
     const startOfYear = new Date(now.getFullYear(), 0, 1)
-    const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59)
     const beginningOfTime = new Date(0)
 
     const totalMonthly = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, startOfMonth, endOfMonth), 0)
-    const totalYearly = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, startOfYear, endOfYear), 0)
+    const totalYearly = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, startOfYear, now), 0)
     const totalAll = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, beginningOfTime, now), 0)
 
     // Group by category based on selected period
@@ -33,7 +32,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
       period === 'monthly'
         ? [startOfMonth, endOfMonth]
         : period === 'yearly'
-          ? [startOfYear, endOfYear]
+          ? [startOfYear, now]
           : [beginningOfTime, now]
 
     subscriptions.forEach((s) => {
