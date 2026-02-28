@@ -45,7 +45,15 @@ export const metadata: Metadata = {
     shortcut: 'https://assets.busyhe.com/favicon.ico',
     apple: 'https://assets.busyhe.com/touxiang60_60.png'
   },
-  manifest: undefined,
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'M-Wallet'
+  },
+  formatDetection: {
+    telephone: false
+  },
   robots: {
     index: true,
     follow: true
@@ -70,11 +78,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="M-Wallet" />
-      </head>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
         <Providers>
           <AppShell>{children}</AppShell>

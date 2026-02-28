@@ -27,10 +27,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <AnimatePresence>{!authenticated && <LockScreen onUnlocked={() => setAuthenticated(true)} />}</AnimatePresence>
 
       {authenticated && (
-        <>
-          <main className="min-h-screen pb-24">{children}</main>
+        <div className="max-w-lg mx-auto min-h-screen relative">
+          <main className="pb-32">{children}</main>
           <NavBar />
-        </>
+        </div>
       )}
     </>
   )

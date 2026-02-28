@@ -71,6 +71,8 @@ export const translations = {
     'form.updateSubscription': 'Update Subscription',
     'form.selectBundled': 'Select Bundled Service',
     'form.noMatch': 'No matching service',
+    'form.selectDate': 'Select date',
+    'form.noEndDate': 'No end date',
 
     // Auth
     'auth.title': 'Wallet',
@@ -220,6 +222,8 @@ export const translations = {
     'form.updateSubscription': '更新订阅',
     'form.selectBundled': '选择捆绑服务',
     'form.noMatch': '无匹配服务',
+    'form.selectDate': '选择日期',
+    'form.noEndDate': '无结束日期',
 
     // Auth
     'auth.title': 'Wallet',

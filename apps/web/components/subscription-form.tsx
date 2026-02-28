@@ -9,6 +9,7 @@ import { PRESET_SERVICES, getServiceCategories } from '@/lib/services'
 import { createSubscription, updateSubscription } from '@/lib/actions/subscriptions'
 import type { Subscription } from '@/lib/types'
 import { ServiceIcon } from './service-icon'
+import { DatePicker } from './date-picker'
 import { useTranslation } from '@/lib/i18n'
 
 interface SubscriptionFormProps {
@@ -348,19 +349,13 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <FormField label={t('form.startDate')}>
-                  <input
-                    type="date"
-                    value={form.startDate}
-                    onChange={(e) => updateField('startDate', e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
-                  />
+                  <DatePicker value={form.startDate} onChange={(val) => updateField('startDate', val)} />
                 </FormField>
                 <FormField label={t('form.endDateOptional')}>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={form.endDate || ''}
-                    onChange={(e) => updateField('endDate', e.target.value || undefined)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
+                    onChange={(val) => updateField('endDate', val || undefined)}
+                    placeholder={t('form.noEndDate')}
                   />
                 </FormField>
               </div>

@@ -20,9 +20,9 @@ export function NavBar() {
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40">
-      <div className="max-w-lg mx-auto px-4 pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-around py-2 px-2 mb-4 rounded-2xl bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg shadow-black/5">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none">
+      <div className="max-w-lg mx-auto px-4 pointer-events-auto">
+        <div className="flex items-center justify-around py-2 px-2 mb-2 md:mb-6 rounded-2xl bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg shadow-black/5">
           {navItems.map((item) => {
             const isActive = pathname === item.href
             const Icon = item.icon
