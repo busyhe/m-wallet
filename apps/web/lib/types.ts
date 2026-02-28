@@ -65,15 +65,6 @@ export interface StatsData {
   currency: Currency
 }
 
-// Cycle label mapping
-export const CYCLE_LABELS: Record<SubscriptionCycle, string> = {
-  monthly: '月付',
-  quarterly: '季付',
-  yearly: '年付',
-  'one-time': '买断',
-  custom: '自定义'
-}
-
 // Currency symbols
 export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   CNY: '¥',

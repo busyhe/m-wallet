@@ -18,7 +18,8 @@ import {
   endOfDay,
   endOfYear as endOfYearFn
 } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
+import { useTranslation } from '@/lib/i18n'
 
 type StatsPeriod = 'monthly' | 'yearly' | 'all'
 
@@ -29,6 +30,8 @@ interface StatsViewProps {
 export function StatsView({ subscriptions }: StatsViewProps) {
   const [period, setPeriod] = useState<StatsPeriod>('monthly')
   const now = useMemo(() => new Date(), [])
+  const { t, lang } = useTranslation()
+  const dateLocale = lang === 'en' ? enUS : zhCN
 
   const stats = useMemo(() => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -50,7 +53,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
           : [beginningOfTime, now]
 
     subscriptions.forEach((s) => {
-      const cat = s.category || '其他'
+      const cat = s.category || t('category.other')
       const amount = getCostInPeriod(s, periodStart, periodEnd)
       if (amount > 0) {
         byCategory.set(cat, (byCategory.get(cat) || 0) + amount)
@@ -92,7 +95,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
 
         return {
           label: format(day, 'd'),
-          fullLabel: format(day, 'yyyy年MM月dd日', { locale: zhCN }),
+          fullLabel: format(day, lang === 'en' ? 'MMM d, yyyy' : 'yyyy年MM月dd日', { locale: dateLocale }),
           value: value
         }
       })
@@ -103,8 +106,8 @@ export function StatsView({ subscriptions }: StatsViewProps) {
         const monthEnd = endOfMonthFn(month)
         const amount = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, monthStart, monthEnd), 0)
         return {
-          label: format(month, 'M月', { locale: zhCN }),
-          fullLabel: format(month, 'yyyy年MM月', { locale: zhCN }),
+          label: format(month, lang === 'en' ? 'MMM' : 'M月', { locale: dateLocale }),
+          fullLabel: format(month, lang === 'en' ? 'MMM yyyy' : 'yyyy年MM月', { locale: dateLocale }),
           value: amount
         }
       })
@@ -124,7 +127,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
         const amount = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, yearStart, yearEnd), 0)
         return {
           label: format(year, 'yyyy'),
-          fullLabel: format(year, 'yyyy年'),
+          fullLabel: format(year, lang === 'en' ? 'yyyy' : 'yyyy年'),
           value: amount
         }
       })
@@ -149,16 +152,16 @@ export function StatsView({ subscriptions }: StatsViewProps) {
       chartData,
       defaultActiveIndex
     }
-  }, [subscriptions, period, now])
+  }, [subscriptions, period, now, t, dateLocale, lang])
 
   const totalAmount =
     period === 'monthly' ? stats.totalMonthly : period === 'yearly' ? stats.totalYearly : stats.totalAll
   const maxCategoryAmount = stats.categories[0]?.amount ?? 0
 
   const periods: { key: StatsPeriod; label: string }[] = [
-    { key: 'monthly', label: '月度' },
-    { key: 'yearly', label: '年度' },
-    { key: 'all', label: '全部' }
+    { key: 'monthly', label: t('stats.monthly') },
+    { key: 'yearly', label: t('stats.yearly') },
+    { key: 'all', label: t('stats.all') }
   ]
 
   return (
@@ -188,13 +191,32 @@ export function StatsView({ subscriptions }: StatsViewProps) {
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-3">
         <StatsCard
-          label={period === 'monthly' ? '月度实际支出' : period === 'yearly' ? '年度实际支出' : '累计实际支出'}
+          label={
+            period === 'monthly'
+              ? t('stats.monthlyActual')
+              : period === 'yearly'
+                ? t('stats.yearlyActual')
+                : t('stats.allActual')
+          }
           amount={totalAmount}
           delay={0}
         />
-        <StatsCard label="活跃订阅" amount={stats.count} prefix="" suffix="个" isInteger delay={0.04} />
         <StatsCard
-          label={period === 'monthly' ? '日均花费' : period === 'yearly' ? '月均花费' : '月度预估'}
+          label={t('stats.activeCount')}
+          amount={stats.count}
+          prefix=""
+          suffix={lang === 'en' ? '' : '个'}
+          isInteger
+          delay={0.04}
+        />
+        <StatsCard
+          label={
+            period === 'monthly'
+              ? t('stats.dailyAverage')
+              : period === 'yearly'
+                ? t('stats.monthlyAverage')
+                : t('stats.monthlyEstimate')
+          }
           amount={
             period === 'monthly'
               ? totalAmount / 30
@@ -208,7 +230,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
 
       {/* Category breakdown */}
       <div>
-        <h3 className="text-sm font-medium text-foreground mb-3">分类统计</h3>
+        <h3 className="text-sm font-medium text-foreground mb-3">{t('stats.categories')}</h3>
         <div className="space-y-3 p-4 rounded-xl bg-card border border-border/50">
           {stats.categories.map((cat, i) => {
             const percentage = totalAmount > 0 ? (cat.amount / totalAmount) * 100 : 0
@@ -239,13 +261,15 @@ export function StatsView({ subscriptions }: StatsViewProps) {
               </motion.div>
             )
           })}
-          {stats.categories.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">暂无数据</p>}
+          {stats.categories.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-4">{t('stats.noData')}</p>
+          )}
         </div>
       </div>
 
       {/* Chart */}
       <div>
-        <h3 className="text-sm font-medium text-foreground mb-3">支出趋势</h3>
+        <h3 className="text-sm font-medium text-foreground mb-3">{t('stats.spendingTrend')}</h3>
         <div className="p-4 rounded-xl bg-card border border-border/50">
           <BarChart key={period} data={stats.chartData} defaultActiveIndex={stats.defaultActiveIndex} />
         </div>

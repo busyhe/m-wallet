@@ -10,8 +10,10 @@ import { formatPrice, calculateStats } from '@/lib/subscription-utils'
 import { AnimatedNumber } from '@/components/animated-number'
 import { SubscriptionList } from '@/components/subscription-list'
 import { SubscriptionDetail } from '@/components/subscription-detail'
+import { useTranslation } from '@/lib/i18n'
 
 export default function HomePage() {
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -61,7 +63,7 @@ export default function HomePage() {
           transition={{ delay: 0.1 }}
           className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/10"
         >
-          <p className="text-xs text-muted-foreground mb-1">本月实际支出</p>
+          <p className="text-xs text-muted-foreground mb-1">{t('home.monthlyActual')}</p>
           <div className="flex items-baseline gap-1">
             <AnimatedNumber
               value={stats.totalMonthly}
@@ -71,7 +73,7 @@ export default function HomePage() {
           </div>
           <div className="flex gap-4 mt-3">
             <div>
-              <p className="text-[10px] text-muted-foreground">年度剩余</p>
+              <p className="text-[10px] text-muted-foreground">{t('home.yearlyRemaining')}</p>
               <AnimatedNumber
                 value={stats.totalYearly}
                 format={formatPrice}
@@ -79,13 +81,16 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <p className="text-[10px] text-muted-foreground">活跃订阅</p>
+              <p className="text-[10px] text-muted-foreground">{t('stats.activeCount')}</p>
               <p className="text-sm font-medium text-foreground">
-                <AnimatedNumber value={stats.count} format={(n) => `${Math.round(n)} 个`} />
+                <AnimatedNumber
+                  value={stats.count}
+                  format={(n) => (lang === 'en' ? String(Math.round(n)) : `${Math.round(n)} 个`)}
+                />
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-muted-foreground">日均</p>
+              <p className="text-[10px] text-muted-foreground">{t('home.costPerDay')}</p>
               <AnimatedNumber
                 value={stats.totalMonthly / 30}
                 format={formatPrice}
@@ -98,8 +103,10 @@ export default function HomePage() {
 
       {/* Subscriptions title */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-medium text-foreground">订阅列表</h2>
-        <span className="text-xs text-muted-foreground">{subscriptions.length} 项</span>
+        <h2 className="text-sm font-medium text-foreground">{t('home.subscriptionList')}</h2>
+        <span className="text-xs text-muted-foreground">
+          {subscriptions.length} {t('home.items')}
+        </span>
       </div>
 
       {/* List */}

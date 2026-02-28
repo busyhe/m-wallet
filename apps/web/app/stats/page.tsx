@@ -5,10 +5,12 @@ import { motion } from 'framer-motion'
 import type { Subscription } from '@/lib/types'
 import { getSubscriptions } from '@/lib/actions/subscriptions'
 import { StatsView } from '@/components/stats-view'
+import { useTranslation } from '@/lib/i18n'
 
 export default function StatsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
+  const { t } = useTranslation()
 
   useEffect(() => {
     getSubscriptions().then((data) => {
@@ -25,7 +27,7 @@ export default function StatsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-lg font-semibold text-foreground"
         >
-          统计
+          {t('nav.stats')}
         </motion.h1>
       </div>
 

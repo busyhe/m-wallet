@@ -4,12 +4,14 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { verifyPassword } from '@/lib/actions/auth'
 import { Lock, Delete, Eye, EyeOff } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n'
 
 interface LockScreenProps {
   onUnlocked: () => void
 }
 
 export function LockScreen({ onUnlocked }: LockScreenProps) {
+  const { t } = useTranslation()
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -69,8 +71,8 @@ export function LockScreen({ onUnlocked }: LockScreenProps) {
         </motion.div>
 
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-foreground">M-Wallet</h1>
-          <p className="text-sm text-muted-foreground mt-1">Enter password to continue</p>
+          <h1 className="text-xl font-semibold text-foreground">{t('auth.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t('auth.enterPassword')}</p>
         </div>
 
         {/* Password display */}
@@ -99,7 +101,7 @@ export function LockScreen({ onUnlocked }: LockScreenProps) {
                 exit={{ opacity: 0 }}
                 className="absolute -bottom-6 left-0 right-0 text-center text-xs text-destructive"
               >
-                Password incorrect
+                {t('auth.incorrect')}
               </motion.p>
             )}
           </AnimatePresence>
@@ -148,7 +150,7 @@ export function LockScreen({ onUnlocked }: LockScreenProps) {
               className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full mx-auto"
             />
           ) : (
-            'Unlock'
+            t('auth.unlock')
           )}
         </motion.button>
       </div>

@@ -3,11 +3,12 @@
 import { motion } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
 import { Home, BarChart3, Settings } from 'lucide-react'
+import { t } from '@/lib/i18n'
 
 const navItems = [
-  { icon: Home, label: '首页', href: '/' },
-  { icon: BarChart3, label: '统计', href: '/stats' },
-  { icon: Settings, label: '设置', href: '/settings' }
+  { icon: Home, label: t('nav.home'), href: '/' },
+  { icon: BarChart3, label: t('nav.stats'), href: '/stats' },
+  { icon: Settings, label: t('nav.settings'), href: '/settings' }
 ]
 
 const HIDDEN_PATHS = ['/new', '/edit']

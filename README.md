@@ -42,11 +42,12 @@ cp apps/web/.env.example apps/web/.env.local
 
 ### Environment Variables
 
-| Variable             | Description                              |
-| -------------------- | ---------------------------------------- |
-| `NOTION_TOKEN`       | Notion Integration Token                 |
-| `NOTION_DATABASE_ID` | Notion Database ID                       |
-| `LOCK_PASSWORD`      | Access password (leave empty to disable) |
+| Variable               | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `NOTION_TOKEN`         | Notion Integration Token                 |
+| `NOTION_DATABASE_ID`   | Notion Database ID                       |
+| `LOCK_PASSWORD`        | Access password (leave empty to disable) |
+| `NEXT_PUBLIC_LANGUAGE` | UI Language (zh / en)                    |
 
 ### Notion Database Schema
 
@@ -79,7 +80,7 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 ## � Project Structure
 
-```
+```text
 m-wallet/
 ├── apps/web/                # Next.js application
 │   ├── app/                 # Pages (/, /stats, /new, /settings)

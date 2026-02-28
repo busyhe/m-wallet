@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Edit3, Trash2, Calendar, Clock, Tag } from 'lucide-react'
 import type { Subscription } from '@/lib/types'
-import { CYCLE_LABELS, CURRENCY_SYMBOLS } from '@/lib/types'
 import { formatPrice, formatNextBilling, getMonthlyEquivalent } from '@/lib/subscription-utils'
 import { deleteSubscription } from '@/lib/actions/subscriptions'
 import { format } from 'date-fns'
 import { ServiceIcon } from './service-icon'
+import { useTranslation } from '@/lib/i18n'
 
 interface SubscriptionDetailProps {
   subscription: Subscription
@@ -19,6 +19,7 @@ interface SubscriptionDetailProps {
 }
 
 export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, onDeleted }: SubscriptionDetailProps) {
+  const { t, lang } = useTranslation()
   const [deleting, setDeleting] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -85,12 +86,12 @@ export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, o
                 <div className="flex items-baseline justify-between">
                   <div>
                     <p className="text-2xl font-bold text-foreground">{formatPrice(sub.price, sub.currency)}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{CYCLE_LABELS[sub.cycle]}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t(`cycle.${sub.cycle}`)}</p>
                   </div>
                   {sub.cycle !== 'one-time' && (
                     <div className="text-right">
                       <p className="text-sm font-medium text-muted-foreground">
-                        ≈ {formatPrice(getMonthlyEquivalent(sub), sub.currency)}/月
+                        ≈ {formatPrice(getMonthlyEquivalent(sub), sub.currency)}/{lang === 'en' ? 'mo' : '月'}
                       </p>
                     </div>
                   )}
@@ -101,21 +102,25 @@ export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, o
               <div className="space-y-3">
                 <DetailRow
                   icon={<Calendar className="w-4 h-4" />}
-                  label="开始时间"
+                  label={t('form.startDate')}
                   value={sub.startDate ? format(new Date(sub.startDate), 'yyyy-MM-dd') : '-'}
                 />
                 {sub.endDate && (
                   <DetailRow
                     icon={<Calendar className="w-4 h-4" />}
-                    label="结束时间"
+                    label={t('form.endDate')}
                     value={format(new Date(sub.endDate), 'yyyy-MM-dd')}
                   />
                 )}
-                <DetailRow icon={<Clock className="w-4 h-4" />} label="下次扣费" value={formatNextBilling(sub)} />
-                <DetailRow icon={<Tag className="w-4 h-4" />} label="分类" value={sub.category || '-'} />
+                <DetailRow
+                  icon={<Clock className="w-4 h-4" />}
+                  label={t('form.nextBilling')}
+                  value={formatNextBilling(sub)}
+                />
+                <DetailRow icon={<Tag className="w-4 h-4" />} label={t('form.category')} value={sub.category || '-'} />
                 {sub.description && (
                   <div className="pt-2">
-                    <p className="text-xs text-muted-foreground mb-1">备注</p>
+                    <p className="text-xs text-muted-foreground mb-1">{t('form.memo')}</p>
                     <p className="text-sm text-foreground">{sub.description}</p>
                   </div>
                 )}
@@ -129,7 +134,7 @@ export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, o
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-medium hover:bg-secondary/80 transition-colors"
                 >
                   <Edit3 className="w-4 h-4" />
-                  编辑
+                  {t('form.edit')}
                 </motion.button>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -142,7 +147,7 @@ export function SubscriptionDetail({ subscription: sub, open, onClose, onEdit, o
                   }`}
                 >
                   <Trash2 className="w-4 h-4" />
-                  {deleting ? '删除中...' : confirmDelete ? '确认删除' : '删除'}
+                  {deleting ? t('form.deleting') : confirmDelete ? t('form.confirmDelete') : t('form.delete')}
                 </motion.button>
               </div>
             </div>

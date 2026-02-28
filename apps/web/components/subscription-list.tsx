@@ -19,6 +19,7 @@ import type { Subscription } from '@/lib/types'
 import { reorderSubscriptions } from '@/lib/actions/subscriptions'
 import { useSortMode } from '@/lib/hooks/use-sort-mode'
 import { SubscriptionCard } from './subscription-card'
+import { t } from '@/lib/i18n'
 
 interface SubscriptionListProps {
   subscriptions: Subscription[]
@@ -148,7 +149,7 @@ export function SubscriptionList({ subscriptions: initialSubs, onSelect }: Subsc
           animate={{ opacity: 1 }}
           className="text-center py-12 text-muted-foreground text-sm"
         >
-          暂无订阅，点击 + 添加
+          {t('home.empty')}
         </motion.div>
       )}
     </div>

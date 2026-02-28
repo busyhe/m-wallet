@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Search, ChevronLeft, Check, Plus, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import type { SubscriptionFormData, SubscriptionCycle, Currency, BundledService } from '@/lib/types'
-import { CYCLE_LABELS } from '@/lib/types'
 import { PRESET_SERVICES, getServiceCategories } from '@/lib/services'
 import { createSubscription, updateSubscription } from '@/lib/actions/subscriptions'
 import type { Subscription } from '@/lib/types'
 import { ServiceIcon } from './service-icon'
+import { useTranslation } from '@/lib/i18n'
 
 interface SubscriptionFormProps {
   editData?: Subscription
@@ -19,6 +19,7 @@ type Step = 'service' | 'details'
 
 export function SubscriptionForm({ editData }: SubscriptionFormProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const isEdit = !!editData
   const [step, setStep] = useState<Step>(isEdit ? 'details' : 'service')
   const [submitting, setSubmitting] = useState(false)
@@ -139,7 +140,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
             <ChevronLeft className="w-5 h-5 text-foreground" />
           </button>
           <h1 className="text-sm font-semibold text-foreground">
-            {isEdit ? '编辑订阅' : step === 'service' ? '选择服务' : '订阅详情'}
+            {isEdit ? t('form.edit') : step === 'service' ? t('form.selectService') : t('form.subscriptionDetails')}
           </h1>
           <div className="w-8" />
         </div>
@@ -161,7 +162,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="text"
-                    placeholder="搜索服务..."
+                    placeholder={t('form.searchService')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
@@ -174,7 +175,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                       !selectedCategory ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'
                     }`}
                   >
-                    全部
+                    {t('category.all')}
                   </button>
                   {categories.map((cat) => (
                     <button
@@ -232,7 +233,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                   onClick={handleCustomService}
                   className="w-full p-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
                 >
-                  + 自定义服务
+                  {t('form.customService')}
                 </motion.button>
               </div>
             </motion.div>
@@ -262,19 +263,19 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
 
               {/* Name (for custom) */}
               {!form.icon && (
-                <FormField label="服务名称">
+                <FormField label={t('form.name')}>
                   <input
                     type="text"
                     value={form.name}
                     onChange={(e) => updateField('name', e.target.value)}
-                    placeholder="输入服务名称"
+                    placeholder={t('form.enterName')}
                     className="w-full px-3 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
                   />
                 </FormField>
               )}
 
               {/* Price & Currency */}
-              <FormField label="价格">
+              <FormField label={t('form.price')}>
                 <div className="flex gap-2">
                   <div className="flex-1 relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
@@ -306,7 +307,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
               </FormField>
 
               {/* Cycle */}
-              <FormField label="订阅周期">
+              <FormField label={t('form.cycle')}>
                 <div className="flex flex-wrap gap-1.5">
                   {cycles.map((c) => (
                     <button
@@ -319,7 +320,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                       }`}
                     >
                       {form.cycle === c && <Check className="w-3 h-3" />}
-                      {CYCLE_LABELS[c]}
+                      {t(`cycle.${c}`)}
                     </button>
                   ))}
                 </div>
@@ -330,7 +331,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     className="mt-2"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">每</span>
+                      <span className="text-sm text-muted-foreground">{t('form.every')}</span>
                       <input
                         type="number"
                         value={form.customCycleDays || ''}
@@ -338,7 +339,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                         className="w-20 px-3 py-2 rounded-lg bg-secondary/60 border border-border/50 text-sm text-center outline-none focus:border-primary/50"
                         placeholder="30"
                       />
-                      <span className="text-sm text-muted-foreground">天</span>
+                      <span className="text-sm text-muted-foreground">{t('form.days')}</span>
                     </div>
                   </motion.div>
                 )}
@@ -346,7 +347,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
 
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
-                <FormField label="开始日期">
+                <FormField label={t('form.startDate')}>
                   <input
                     type="date"
                     value={form.startDate}
@@ -354,7 +355,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     className="w-full px-3 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
                   />
                 </FormField>
-                <FormField label="结束日期（可选）">
+                <FormField label={t('form.endDateOptional')}>
                   <input
                     type="date"
                     value={form.endDate || ''}
@@ -365,18 +366,18 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
               </div>
 
               {/* Description */}
-              <FormField label="备注（可选）">
+              <FormField label={t('form.memoOptional')}>
                 <textarea
                   value={form.description}
                   onChange={(e) => updateField('description', e.target.value)}
-                  placeholder="添加备注..."
+                  placeholder={t('form.addMemo')}
                   rows={2}
                   className="w-full px-3 py-2.5 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors resize-none"
                 />
               </FormField>
 
               {/* Bundled services */}
-              <FormField label="捆绑服务（可选）">
+              <FormField label={t('form.bundledOptional')}>
                 <div className="space-y-2">
                   {form.bundledServices?.map((bs, i) => (
                     <div key={`${bs.name}-${i}`} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-secondary/40">
@@ -400,7 +401,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     className="flex items-center gap-1.5 w-full p-2.5 rounded-xl border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    添加捆绑服务
+                    {t('form.addBundled')}
                   </button>
                 </div>
               </FormField>
@@ -412,7 +413,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                 disabled={submitting || !form.name || !form.price}
                 className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm disabled:opacity-40 transition-all hover:opacity-90 mb-24"
               >
-                {submitting ? '保存中...' : isEdit ? '更新订阅' : '添加订阅'}
+                {submitting ? t('form.saving') : isEdit ? t('form.updateSubscription') : t('form.add')}
               </motion.button>
             </motion.div>
           )}
@@ -438,7 +439,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
               >
                 <div className="p-4 border-b border-border/50 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-foreground">选择捆绑服务</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('form.selectBundled')}</h3>
                     <button
                       onClick={() => setShowBundlePicker(false)}
                       className="p-1 rounded-lg hover:bg-secondary transition-colors"
@@ -450,7 +451,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
-                      placeholder="搜索服务..."
+                      placeholder={t('form.searchService')}
                       value={bundleSearch}
                       onChange={(e) => setBundleSearch(e.target.value)}
                       className="w-full pl-9 pr-4 py-2 rounded-xl bg-secondary/60 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
@@ -463,7 +464,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                         !bundleCategory ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'
                       }`}
                     >
-                      全部
+                      {t('category.all')}
                     </button>
                     {categories.map((cat) => (
                       <button
@@ -501,7 +502,7 @@ export function SubscriptionForm({ editData }: SubscriptionFormProps) {
                     ))}
                   </div>
                   {bundleFilteredServices.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-8">无匹配服务</p>
+                    <p className="text-sm text-muted-foreground text-center py-8">{t('form.noMatch')}</p>
                   )}
                 </div>
               </motion.div>

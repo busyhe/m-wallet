@@ -121,7 +121,10 @@ export function BarChart({ data, height = 140, color = 'var(--primary)', default
                       }}
                     >
                       <span className="text-[10px] font-medium text-foreground">{item.fullLabel || item.label}</span>
-                      <span className="text-xs font-bold text-primary">¥{item.value.toFixed(2)}</span>
+                      <span className="text-xs font-bold text-primary">
+                        {process.env.NEXT_PUBLIC_LANGUAGE === 'en' ? '$' : '¥'}
+                        {item.value.toFixed(2)}
+                      </span>
                     </div>
 
                     {/* Bar */}

@@ -5,14 +5,15 @@ import { Analytics } from '@/components/analytics'
 import { fontSans, fontMono } from '@/lib/fonts'
 import { siteConfig } from '@/config/site'
 import { AppShell } from '@/components/app-shell'
+import { t } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`
+    default: t('meta.title'),
+    template: `%s - ${t('meta.title')}`
   },
   metadataBase: new URL(siteConfig.url),
-  description: '订阅费用管理工具，轻松追踪和管理所有订阅支出',
+  description: t('meta.description'),
   keywords: [
     'subscription manager',
     'wallet',
@@ -27,16 +28,16 @@ export const metadata: Metadata = {
   creator: 'busyhe',
   openGraph: {
     type: 'website',
-    locale: 'zh_CN',
+    locale: t('settings.language') === 'Language' ? 'en_US' : 'zh_CN',
     url: siteConfig.url,
-    title: 'M-Wallet - 订阅费用管理',
-    description: '基于 Notion 数据驱动的订阅费用管理工具，Linear UI 设计风格',
+    title: t('meta.title'),
+    description: t('meta.ogDescription'),
     siteName: siteConfig.name
   },
   twitter: {
     card: 'summary',
-    title: 'M-Wallet - 订阅费用管理',
-    description: '基于 Notion 数据驱动的订阅费用管理工具',
+    title: t('meta.title'),
+    description: t('meta.twitterDescription'),
     creator: '@busyhe_'
   },
   icons: {

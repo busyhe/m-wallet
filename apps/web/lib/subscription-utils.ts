@@ -1,5 +1,6 @@
 import { addMonths, addDays, addYears, format, differenceInDays, isAfter } from 'date-fns'
 import type { Subscription, SubscriptionCycle, Currency } from '@/lib/types'
+import { t } from './i18n'
 
 // Calculate the next billing date
 export function getNextBillingDate(sub: Subscription): Date | null {
@@ -34,13 +35,13 @@ export function getNextBillingDate(sub: Subscription): Date | null {
 
 // Format next billing date display
 export function formatNextBilling(sub: Subscription): string {
-  if (sub.cycle === 'one-time') return '一次性'
+  if (sub.cycle === 'one-time') return t('common.oneTime')
   const next = getNextBillingDate(sub)
-  if (!next) return '已到期'
+  if (!next) return t('common.expired')
   const days = differenceInDays(next, new Date())
-  if (days === 0) return '今天'
-  if (days === 1) return '明天'
-  if (days <= 7) return `${days}天后`
+  if (days === 0) return t('common.today')
+  if (days === 1) return t('common.tomorrow')
+  if (days <= 7) return `${days}${t('common.daysAfter')}`
   return format(next, 'MM/dd')
 }
 
@@ -149,12 +150,5 @@ export function calculateStats(subscriptions: Subscription[]) {
 
 // Format cycle label
 export function getCycleLabel(cycle: SubscriptionCycle): string {
-  const labels: Record<SubscriptionCycle, string> = {
-    monthly: '月',
-    quarterly: '季',
-    yearly: '年',
-    'one-time': '买断',
-    custom: '自定义'
-  }
-  return labels[cycle]
+  return t(`cycle.short.${cycle}`)
 }

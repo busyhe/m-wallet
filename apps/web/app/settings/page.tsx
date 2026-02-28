@@ -8,11 +8,13 @@ import { useSortMode } from '@/lib/hooks/use-sort-mode'
 import { logout } from '@/lib/actions/auth'
 import { useRouter } from 'next/navigation'
 import type { SortMode } from '@/lib/types'
+import { useTranslation } from '@/lib/i18n'
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { sortMode, setSortMode } = useSortMode()
   const router = useRouter()
+  const { t } = useTranslation()
   const [loggingOut, setLoggingOut] = useState(false)
 
   const handleLogout = async () => {
@@ -23,9 +25,9 @@ export default function SettingsPage() {
   }
 
   const themeOptions = [
-    { key: 'light', label: '浅色', icon: Sun },
-    { key: 'dark', label: '深色', icon: Moon },
-    { key: 'system', label: '跟随系统', icon: Palette }
+    { key: 'light', label: t('settings.themeLight'), icon: Sun },
+    { key: 'dark', label: t('settings.themeDark'), icon: Moon },
+    { key: 'system', label: t('settings.themeSystem'), icon: Palette }
   ]
 
   return (
@@ -36,14 +38,14 @@ export default function SettingsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-lg font-semibold text-foreground"
         >
-          设置
+          {t('settings.title')}
         </motion.h1>
       </div>
 
       <div className="space-y-6">
         {/* Theme */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">外观</h3>
+          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">{t('settings.appearance')}</h3>
           <div className="rounded-xl bg-card border border-border/50 overflow-hidden">
             {themeOptions.map((opt, i) => {
               const Icon = opt.icon
@@ -74,13 +76,13 @@ export default function SettingsPage() {
 
         {/* Sorting */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">列表排序</h3>
+          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">{t('settings.listSorting')}</h3>
           <div className="rounded-xl bg-card border border-border/50 overflow-hidden">
             {[
-              { key: 'custom', label: '自定义排序 (支持拖拽)', icon: GripVertical },
-              { key: 'price-desc', label: '按金额从高到低', icon: ArrowDown },
-              { key: 'price-asc', label: '按金额从低到高', icon: ArrowUp },
-              { key: 'name-asc', label: '按名称排序', icon: ArrowUpDown }
+              { key: 'custom', label: t('settings.sortCustom'), icon: GripVertical },
+              { key: 'price-desc', label: t('settings.sortPriceDesc'), icon: ArrowDown },
+              { key: 'price-asc', label: t('settings.sortPriceAsc'), icon: ArrowUp },
+              { key: 'name-asc', label: t('settings.sortNameAsc'), icon: ArrowUpDown }
             ].map((opt, i, arr) => {
               const Icon = opt.icon
               return (
@@ -110,14 +112,14 @@ export default function SettingsPage() {
 
         {/* Security */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">安全</h3>
+          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">{t('settings.security')}</h3>
           <div className="rounded-xl bg-card border border-border/50 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
               <div className="flex items-center gap-3">
                 <Shield className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-foreground">密码保护</span>
+                <span className="text-sm text-foreground">{t('settings.passwordProtection')}</span>
               </div>
-              <span className="text-xs text-muted-foreground">已启用</span>
+              <span className="text-xs text-muted-foreground">{t('settings.enabled')}</span>
             </div>
             <button
               onClick={handleLogout}
@@ -125,17 +127,17 @@ export default function SettingsPage() {
               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-destructive hover:bg-destructive/5 transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              <span>{loggingOut ? '退出中...' : '退出登录'}</span>
+              <span>{loggingOut ? t('settings.loggingOut') : t('settings.logout')}</span>
             </button>
           </div>
         </motion.div>
 
         {/* About */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">关于</h3>
+          <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">{t('settings.about')}</h3>
           <div className="rounded-xl bg-card border border-border/50 p-4">
-            <p className="text-sm text-foreground font-medium">M-Wallet</p>
-            <p className="text-xs text-muted-foreground mt-1">订阅管理工具 · 基于 Notion 数据驱动</p>
+            <p className="text-sm text-foreground font-medium">Wallet</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('settings.aboutDesc')}</p>
             <p className="text-xs text-muted-foreground mt-0.5">v0.4.1</p>
           </div>
         </motion.div>
