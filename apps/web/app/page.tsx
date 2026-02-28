@@ -82,12 +82,11 @@ export default function HomePage() {
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">{t('stats.activeCount')}</p>
-              <p className="text-sm font-medium text-foreground">
-                <AnimatedNumber
-                  value={stats.count}
-                  format={(n) => (lang === 'en' ? String(Math.round(n)) : `${Math.round(n)} 个`)}
-                />
-              </p>
+              <AnimatedNumber
+                value={stats.count}
+                format={(n) => (lang === 'en' ? String(Math.round(n)) : `${Math.round(n)} 个`)}
+                className="text-sm font-medium text-foreground tabular-nums"
+              />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground">{t('home.costPerDay')}</p>
@@ -126,8 +125,8 @@ export default function HomePage() {
           subscription={selectedSub}
           open={!!selectedSub}
           onClose={() => setSelectedSub(null)}
-          onEdit={() => {
-            // TODO: navigate to edit page
+          onEdit={(sub) => {
+            router.push(`/edit/${sub.id}`)
             setSelectedSub(null)
           }}
           onDeleted={loadData}

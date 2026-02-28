@@ -8,6 +8,7 @@ import { useSortMode } from '@/lib/hooks/use-sort-mode'
 import { logout } from '@/lib/actions/auth'
 import { useRouter } from 'next/navigation'
 import type { SortMode } from '@/lib/types'
+import { version } from '@/package.json'
 import { useTranslation } from '@/lib/i18n'
 
 export default function SettingsPage() {
@@ -138,7 +139,7 @@ export default function SettingsPage() {
           <div className="rounded-xl bg-card border border-border/50 p-4">
             <p className="text-sm text-foreground font-medium">Wallet</p>
             <p className="text-xs text-muted-foreground mt-1">{t('settings.aboutDesc')}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">v0.4.1</p>
+            <p className="text-xs text-muted-foreground mt-0.5">v{version}</p>
           </div>
         </motion.div>
       </div>

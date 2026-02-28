@@ -91,6 +91,17 @@ export async function getSubscriptions(): Promise<Subscription[]> {
   }
 }
 
+// Get a single subscription
+export async function getSubscription(id: string): Promise<Subscription | null> {
+  try {
+    const response = await notion.pages.retrieve({ page_id: id })
+    return parseSubscription(response as PageObjectResponse)
+  } catch (error) {
+    console.error('Failed to fetch subscription:', error)
+    return null
+  }
+}
+
 // Create a new subscription
 export async function createSubscription(data: SubscriptionFormData): Promise<Subscription | null> {
   try {
