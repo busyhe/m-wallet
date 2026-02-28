@@ -5,6 +5,20 @@ import { motion } from 'framer-motion'
 import type { Subscription } from '@/lib/types'
 import { getCostInPeriod, formatPrice } from '@/lib/subscription-utils'
 import { StatsCard } from './stats-card'
+import { BarChart } from './bar-chart'
+import {
+  startOfMonth as startOfMonthFn,
+  endOfMonth as endOfMonthFn,
+  eachDayOfInterval,
+  format,
+  startOfYear as startOfYearFn,
+  eachMonthOfInterval,
+  eachYearOfInterval,
+  startOfDay,
+  endOfDay,
+  endOfYear as endOfYearFn
+} from 'date-fns'
+import { zhCN } from 'date-fns/locale'
 
 type StatsPeriod = 'monthly' | 'yearly' | 'all'
 
@@ -14,9 +28,9 @@ interface StatsViewProps {
 
 export function StatsView({ subscriptions }: StatsViewProps) {
   const [period, setPeriod] = useState<StatsPeriod>('monthly')
+  const now = useMemo(() => new Date(), [])
 
   const stats = useMemo(() => {
-    const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59)
     const startOfYear = new Date(now.getFullYear(), 0, 1)
@@ -53,14 +67,87 @@ export function StatsView({ subscriptions }: StatsViewProps) {
       return true
     }).length
 
+    // Calculate chart data based on period
+    let chartData: { label: string; value: number; fullLabel?: string }[] = []
+
+    if (period === 'monthly') {
+      const days = eachDayOfInterval({ start: startOfMonthFn(now), end: endOfMonthFn(now) })
+      chartData = days.map((day) => {
+        // Actual transaction amount on this day
+        const actualAmount = subscriptions.reduce(
+          (sum, s) => sum + getCostInPeriod(s, startOfDay(day), endOfDay(day)),
+          0
+        )
+
+        // Pro-rated daily cost (to ensure chart isn't empty)
+        const proratedAmount = subscriptions.reduce((sum, s) => {
+          // If active in this month
+          const monthStart = startOfMonthFn(day)
+          const monthEnd = endOfMonthFn(day)
+          const costInMonth = getCostInPeriod(s, monthStart, monthEnd)
+          return sum + costInMonth / 30 // Simplified pro-rating
+        }, 0)
+
+        const value = actualAmount > 0 ? actualAmount : proratedAmount
+
+        return {
+          label: format(day, 'd'),
+          fullLabel: format(day, 'yyyy年MM月dd日', { locale: zhCN }),
+          value: value
+        }
+      })
+    } else if (period === 'yearly') {
+      const months = eachMonthOfInterval({ start: startOfYearFn(now), end: endOfYearFn(now) })
+      chartData = months.map((month) => {
+        const monthStart = month
+        const monthEnd = endOfMonthFn(month)
+        const amount = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, monthStart, monthEnd), 0)
+        return {
+          label: format(month, 'M月', { locale: zhCN }),
+          fullLabel: format(month, 'yyyy年MM月', { locale: zhCN }),
+          value: amount
+        }
+      })
+    } else {
+      // 'all' - show last 5 years or from first sub
+      const firstSubDate = subscriptions.reduce((min, s) => {
+        const start = new Date(s.startDate)
+        return start < min ? start : min
+      }, now)
+      const startYear = Math.min(now.getFullYear() - 4, firstSubDate.getFullYear())
+      const years = eachYearOfInterval({ start: new Date(startYear, 0, 1), end: now })
+      chartData = years.map((year) => {
+        const yearStart = startOfYearFn(year)
+        const yearEnd = new Date(year.getFullYear(), 11, 31, 23, 59, 59)
+        const amount = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, yearStart, yearEnd), 0)
+        return {
+          label: format(year, 'yyyy'),
+          fullLabel: format(year, 'yyyy年'),
+          value: amount
+        }
+      })
+    }
+
+    // Calculate default active index for current date
+    let defaultActiveIndex: number | undefined
+    if (period === 'monthly') {
+      defaultActiveIndex = now.getDate() - 1
+    } else if (period === 'yearly') {
+      defaultActiveIndex = now.getMonth()
+    } else {
+      defaultActiveIndex = chartData.length - 1
+    }
+
     return {
       totalMonthly,
       totalYearly: totalYearly,
       totalAll: totalAll,
       count: activeCount,
-      categories
+      categories,
+      chartData,
+      defaultActiveIndex
     }
-  }, [subscriptions, period])
+  }, [subscriptions, period, now])
 
   const totalAmount =
     period === 'monthly' ? stats.totalMonthly : period === 'yearly' ? stats.totalYearly : stats.totalAll
@@ -106,10 +193,23 @@ export function StatsView({ subscriptions }: StatsViewProps) {
         <StatsCard label="活跃订阅" amount={stats.count} prefix="" suffix="个" isInteger delay={0.1} />
         <StatsCard
           label={period === 'monthly' ? '日均花费' : period === 'yearly' ? '月均花费' : '月度预估'}
-          amount={period === 'monthly' ? totalAmount / 30 : period === 'yearly' ? totalAmount / 12 : stats.totalMonthly}
+          amount={
+            period === 'monthly'
+              ? totalAmount / 30
+              : period === 'yearly'
+                ? totalAmount / (now.getMonth() + 1)
+                : totalAmount / 12
+          }
           delay={0.2}
         />
-        <StatsCard label="年度预估" amount={stats.totalYearly} delay={0.3} />
+      </div>
+
+      {/* Chart */}
+      <div>
+        <h3 className="text-sm font-medium text-foreground mb-3">支出趋势</h3>
+        <div className="p-4 rounded-xl bg-card border border-border/50">
+          <BarChart key={period} data={stats.chartData} defaultActiveIndex={stats.defaultActiveIndex} />
+        </div>
       </div>
 
       {/* Category breakdown */}
