@@ -192,7 +192,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
           amount={totalAmount}
           delay={0}
         />
-        <StatsCard label="活跃订阅" amount={stats.count} prefix="" suffix="个" isInteger delay={0.1} />
+        <StatsCard label="活跃订阅" amount={stats.count} prefix="" suffix="个" isInteger delay={0.04} />
         <StatsCard
           label={period === 'monthly' ? '日均花费' : period === 'yearly' ? '月均花费' : '月度预估'}
           amount={
@@ -202,7 +202,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
                 ? totalAmount / (now.getMonth() + 1)
                 : totalAmount / 12
           }
-          delay={0.2}
+          delay={0.08}
         />
       </div>
 

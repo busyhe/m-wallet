@@ -19,11 +19,16 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.04 }}
+      transition={{
+        type: 'spring',
+        stiffness: 400,
+        damping: 30,
+        delay: index * 0.04
+      }}
       whileHover={{ y: -2, transition: { duration: 0.2 } }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="group flex items-center gap-3.5 p-3.5 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-sm transition-all cursor-pointer"
+      className="group flex items-center gap-3.5 p-3.5 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-md transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer"
     >
       {/* Service icon */}
       <div

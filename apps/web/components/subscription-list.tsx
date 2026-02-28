@@ -14,9 +14,10 @@ import {
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpDown, ArrowUp, ArrowDown, GripVertical } from 'lucide-react'
-import type { Subscription, SortMode } from '@/lib/types'
+import { GripVertical } from 'lucide-react'
+import type { Subscription } from '@/lib/types'
 import { reorderSubscriptions } from '@/lib/actions/subscriptions'
+import { useSortMode } from '@/lib/hooks/use-sort-mode'
 import { SubscriptionCard } from './subscription-card'
 
 interface SubscriptionListProps {
@@ -48,14 +49,6 @@ function SortableSubscriptionCard({
   return (
     <div ref={setNodeRef} style={style} className={`relative ${isDragging ? 'opacity-40' : ''}`} {...attributes}>
       <div className="flex items-center gap-1">
-        {dragMode && (
-          <div
-            {...listeners}
-            className="flex-shrink-0 cursor-grab active:cursor-grabbing p-1 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <GripVertical className="w-4 h-4" />
-          </div>
-        )}
         <div className="flex-1">
           <SubscriptionCard subscription={subscription} onClick={onClick} index={index} />
         </div>
@@ -64,16 +57,9 @@ function SortableSubscriptionCard({
   )
 }
 
-const SORT_OPTIONS: { mode: SortMode; label: string; icon?: React.ReactNode }[] = [
-  { mode: 'custom', label: '自定义' },
-  { mode: 'price-desc', label: '金额↓', icon: <ArrowDown className="w-3 h-3" /> },
-  { mode: 'price-asc', label: '金额↑', icon: <ArrowUp className="w-3 h-3" /> },
-  { mode: 'name-asc', label: '名称', icon: <ArrowUpDown className="w-3 h-3" /> }
-]
-
 export function SubscriptionList({ subscriptions: initialSubs, onSelect }: SubscriptionListProps) {
   const [subscriptions, setSubscriptions] = useState(initialSubs)
-  const [sortMode, setSortMode] = useState<SortMode>('custom')
+  const { sortMode } = useSortMode()
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
@@ -124,23 +110,6 @@ export function SubscriptionList({ subscriptions: initialSubs, onSelect }: Subsc
 
   return (
     <div className="space-y-3">
-      {/* Sort controls */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-        {SORT_OPTIONS.map((opt) => (
-          <motion.button
-            key={opt.mode}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setSortMode(opt.mode)}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-              sortMode === opt.mode ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary'
-            }`}
-          >
-            {opt.icon}
-            {opt.label}
-          </motion.button>
-        ))}
-      </div>
-
       {/* Subscription list */}
       <DndContext
         sensors={sensors}
