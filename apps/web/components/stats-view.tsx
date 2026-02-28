@@ -118,7 +118,9 @@ export function StatsView({ subscriptions }: StatsViewProps) {
       const years = eachYearOfInterval({ start: new Date(startYear, 0, 1), end: now })
       chartData = years.map((year) => {
         const yearStart = startOfYearFn(year)
-        const yearEnd = new Date(year.getFullYear(), 11, 31, 23, 59, 59)
+        // For the current year, cap at today instead of end of year
+        const yearEnd =
+          year.getFullYear() === now.getFullYear() ? now : new Date(year.getFullYear(), 11, 31, 23, 59, 59)
         const amount = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, yearStart, yearEnd), 0)
         return {
           label: format(year, 'yyyy'),
@@ -204,18 +206,10 @@ export function StatsView({ subscriptions }: StatsViewProps) {
         />
       </div>
 
-      {/* Chart */}
-      <div>
-        <h3 className="text-sm font-medium text-foreground mb-3">支出趋势</h3>
-        <div className="p-4 rounded-xl bg-card border border-border/50">
-          <BarChart key={period} data={stats.chartData} defaultActiveIndex={stats.defaultActiveIndex} />
-        </div>
-      </div>
-
       {/* Category breakdown */}
       <div>
         <h3 className="text-sm font-medium text-foreground mb-3">分类统计</h3>
-        <div className="space-y-3">
+        <div className="space-y-3 p-4 rounded-xl bg-card border border-border/50">
           {stats.categories.map((cat, i) => {
             const percentage = totalAmount > 0 ? (cat.amount / totalAmount) * 100 : 0
             const percentageStr = percentage > 0 && percentage < 0.1 ? '<0.1%' : `${percentage.toFixed(1)}%`
@@ -246,6 +240,14 @@ export function StatsView({ subscriptions }: StatsViewProps) {
             )
           })}
           {stats.categories.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">暂无数据</p>}
+        </div>
+      </div>
+
+      {/* Chart */}
+      <div>
+        <h3 className="text-sm font-medium text-foreground mb-3">支出趋势</h3>
+        <div className="p-4 rounded-xl bg-card border border-border/50">
+          <BarChart key={period} data={stats.chartData} defaultActiveIndex={stats.defaultActiveIndex} />
         </div>
       </div>
     </div>
