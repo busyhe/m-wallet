@@ -48,11 +48,27 @@
    - `LOCK_PASSWORD`: 设置进入应用的访问密码。
    - `NEXT_PUBLIC_LANGUAGE`: 默认语言（`zh` 或 `en`）。
 
-## Notion 数据库结构
+## 在 Vercel 上部署
+
+部署 Next.js 应用最简单的方式是使用 [Vercel 平台](https://vercel.com/new)。
 
 1. 复制这个 Notion 模板
 
    [Notion 演示页面](https://busyhe.notion.site/314bba2b2ae780a09b5ccdbc6fe0bce6?v=314bba2b2ae780b8a9e4000cb5128383&pvs=74)
+
+2. 点击下方按钮部署：
+
+   [![使用 Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbusyhe%2Fm-wallet)
+
+3. 配置环境变量：
+   - 将 `NOTION_TOKEN` 设置为你的 Notion 集成令牌
+   - 将 `NOTION_DATABASE_ID` 设置为你的 Notion 页面 ID
+   - 将 `LOCK_PASSWORD` 设置为你的 Notion 页面 ID
+   - 将 `NEXT_PUBLIC_GA_ID` 设置为你的 Google Analytics ID（可选）
+
+4. 部署并享受你的导航网站！
+
+你也可以通过推送到连接 Vercel 的 GitHub 仓库来手动部署。
 
 ## 开发与部署
 
@@ -67,10 +83,6 @@ pnpm dev
 ```bash
 pnpm build
 ```
-
-### 部署
-
-推荐使用 [Vercel](https://vercel.com) 进行一键部署。请确保在 Vercel 面板中配置好所有环境变量。
 
 ## 许可证
 

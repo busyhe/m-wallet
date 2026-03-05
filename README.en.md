@@ -48,11 +48,27 @@ As this project uses a Monorepo structure managed by Turborepo, please follow th
    - `LOCK_PASSWORD`: Access password for the application.
    - `NEXT_PUBLIC_LANGUAGE`: Default language (`zh` or `en`).
 
-## Notion Database Schema
+## Deploy on Vercel
 
-1. 复制这个 Notion 模板
+The easiest way to deploy a Next.js app is to use the [Vercel Platform](https://vercel.com/new).
 
-   [Notion 演示页面](https://busyhe.notion.site/314bba2b2ae780a09b5ccdbc6fe0bce6?v=314bba2b2ae780b8a9e4000cb5128383&pvs=74)
+1. Copy this Notion template
+
+   [Notion Demo Page](https://busyhe.notion.site/314bba2b2ae780a09b5ccdbc6fe0bce6?v=314bba2b2ae780b8a9e4000cb5128383&pvs=74)
+
+2. Click the button below to deploy:
+
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbusyhe%2Fm-wallet)
+
+3. Configure environment variables:
+   - Set `NOTION_TOKEN` to your Notion integration token
+   - Set `NOTION_DATABASE_ID` to your Notion database ID
+   - Set `LOCK_PASSWORD` to your access password
+   - Set `NEXT_PUBLIC_GA_ID` to your Google Analytics ID (optional)
+
+4. Deploy and enjoy your wallet app!
+
+You can also deploy manually by pushing to a GitHub repository connected to Vercel.
 
 ## Development & Deployment
 
@@ -67,10 +83,6 @@ pnpm dev
 ```bash
 pnpm build
 ```
-
-### Deployment
-
-Deployment via [Vercel](https://vercel.com) is recommended. Ensure all environment variables are configured in the Vercel dashboard.
 
 ## License
 
