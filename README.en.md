@@ -1,104 +1,77 @@
-# M-Wallet
+# M-Wallet: Notion-based Subscription Tracker & Wallet Manager
 
-Subscription expense manager powered by Notion data, with a Linear‑style UI.
+English | [简体中文](./README.md)
 
-中文版本：`README.md`
+A lightweight subscription management and personal wallet application built with Next.js 16. Real-time synchronization with your Notion database keeps your finances organized and visible.
 
-## ✨ Features
+![M-Wallet Screenshot](./example.png)
 
-- **Subscription management**: create / edit / delete subscriptions, 55+ presets
-- **Spending stats**: monthly / yearly / total breakdowns by category
-- **Flexible cycles**: monthly / quarterly / yearly / one‑time / custom
-- **Password protection**: lightweight Cookie‑based access control
-- **Custom sorting**: drag‑and‑drop / by amount / by name
-- **Dark mode**: light / dark / system
-- **Micro‑animations**: Linear‑style UI with framer‑motion
-- **Notion‑driven**: data stored in a Notion database
+## Features
 
-## 🛠️ Tech Stack
+- **Real-time Notion Sync**: Read subscription data directly from your Notion database.
+- **Subscription Tracking**: Track service fees with monthly/yearly statistics.
+- **Financial Overview**: Automatically calculate monthly spending, yearly balance, and daily average cost.
+- **Privacy Lock**: Support for a lock password to protect your sensitive information.
+- **Modern Design**: Smooth UI/UX powered by Tailwind CSS, Framer Motion, and Lucide Icons.
+- **i18n Support**: Native support for Chinese and English.
 
-- **Next.js 16** + React 19 + TypeScript
-- **TailwindCSS 4** + Linear‑style theme
-- **@notionhq/client** - Notion API layer
-- **@dnd-kit** - Drag and drop
-- **framer-motion** - Animations
-- **Turborepo** + pnpm monorepo
+## Installation
 
-## 🚀 Quick Start
+As this project uses a Monorepo structure managed by Turborepo, please follow these steps:
 
-### Prerequisites
+1. **Clone the repository**:
 
-- Node.js >= 20
-- pnpm >= 10
+   ```bash
+   git clone https://github.com/busyhe/m-wallet.git
+   cd m-wallet
+   ```
 
-### Setup
+2. **Install dependencies**:
 
-```bash
-# Install dependencies
-pnpm install
+   ```bash
+   pnpm install
+   ```
 
-# Configure environment
-cp apps/web/.env.example apps/web/.env.local
-# Edit .env.local with your Notion credentials
-```
+3. **Configure environment variables**:
+   Create a `.env.local` file in the `apps/web` directory:
 
-### Environment Variables
+   ```bash
+   NOTION_TOKEN=your_notion_internal_integration_token
+   NOTION_DATABASE_ID=your_notion_database_id
+   LOCK_PASSWORD=your_secure_password
+   NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+   NEXT_PUBLIC_LANGUAGE=en
+   ```
 
-| Variable               | Description                              |
-| ---------------------- | ---------------------------------------- |
-| `NOTION_TOKEN`         | Notion Integration Token                 |
-| `NOTION_DATABASE_ID`   | Notion Database ID                       |
-| `LOCK_PASSWORD`        | Access password (leave empty to disable) |
-| `NEXT_PUBLIC_LANGUAGE` | UI language (`zh` / `en`)                |
+   - `NOTION_TOKEN`: Your Notion integration token.
+   - `NOTION_DATABASE_ID`: The ID of your Notion database.
+   - `LOCK_PASSWORD`: Access password for the application.
+   - `NEXT_PUBLIC_LANGUAGE`: Default language (`zh` or `en`).
 
-### Notion Database Schema
+## Notion Database Schema
 
-Create a Notion database with the following properties:
+1. 复制这个 Notion 模板
 
-| Property        | Type      | Description                                              |
-| --------------- | --------- | -------------------------------------------------------- |
-| Name            | title     | Subscription name                                        |
-| Icon            | url       | Icon URL                                                 |
-| Price           | number    | Price                                                    |
-| Currency        | select    | Currency (CNY / USD)                                     |
-| Cycle           | select    | Cycle (monthly / quarterly / yearly / one-time / custom) |
-| CustomCycleDays | number    | Custom cycle days                                        |
-| StartDate       | date      | Start date                                               |
-| EndDate         | date      | End date                                                 |
-| Description     | rich_text | Description                                              |
-| Category        | select    | Category                                                 |
-| Position        | number    | Sort position                                            |
-| Color           | select    | Brand color                                              |
+   [Notion 演示页面](https://busyhe.notion.site/314bba2b2ae780a09b5ccdbc6fe0bce6?v=314bba2b2ae780b8a9e4000cb5128383&pvs=74)
 
-### Development
+## Development & Deployment
+
+### Local Development
 
 ```bash
-pnpm dev        # Start dev server
-pnpm build      # Production build
-pnpm lint       # Lint check
+pnpm dev
 ```
 
-Visit `http://localhost:3000`
+### Build
 
-## 🗂️ Project Structure
-
-```text
-m-wallet/
-├── apps/web/                # Next.js app
-│   ├── app/                 # Pages (/, /stats, /new, /settings)
-│   ├── components/          # UI components
-│   ├── lib/
-│   │   ├── actions/         # Server Actions (subscriptions, auth)
-│   │   ├── notion.ts        # Notion client
-│   │   ├── services.ts      # 55+ preset services
-│   │   └── types.ts         # TypeScript types
-│   └── config/              # Site config
-├── packages/
-│   ├── ui/                  # Shared UI (shadcn/ui)
-│   ├── eslint-config/       # ESLint config
-│   └── typescript-config/   # TypeScript config
+```bash
+pnpm build
 ```
 
-## 📄 License
+### Deployment
 
-[MIT](LICENSE)
+Deployment via [Vercel](https://vercel.com) is recommended. Ensure all environment variables are configured in the Vercel dashboard.
+
+## License
+
+MIT License
