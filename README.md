@@ -2,18 +2,20 @@
 
 订阅费用管理工具，基于 Notion 数据驱动，Linear UI 风格。
 
-## ✨ Features
+English version: `README.en.md`
 
-- � **订阅管理** - 新建 / 编辑 / 删除订阅，55+ 预置服务可选
-- 📊 **花费统计** - 月度 / 年度 / 全部花费统计，按分类细分
-- 🔄 **灵活周期** - 月付 / 季付 / 年付 / 买断 / 自定义周期
-- 🔐 **密码保护** - Cookie 方式的轻量访问控制
-- 🎯 **自定义排序** - 拖拽排序 / 按金额 / 按名称排序
-- 🌙 **暗色模式** - 浅色 / 深色 / 跟随系统
-- ✨ **微动画** - Linear 风格 UI，framer-motion 动画
-- �️ **Notion 驱动** - 数据存储在 Notion 数据库中
+## ✨ 功能特性
 
-## 🛠️ Tech Stack
+- **订阅管理**：新建 / 编辑 / 删除订阅，内置 55+ 预置服务
+- **花费统计**：月度 / 年度 / 全部花费统计，按分类细分
+- **灵活周期**：月付 / 季付 / 年付 / 买断 / 自定义周期
+- **密码保护**：基于 Cookie 的轻量访问控制
+- **自定义排序**：拖拽排序 / 按金额 / 按名称排序
+- **暗色模式**：浅色 / 深色 / 跟随系统
+- **微动画**：Linear 风格 UI，framer-motion 动画
+- **Notion 驱动**：数据存储在 Notion 数据库中
+
+## 🛠️ 技术栈
 
 - **Next.js 16** + React 19 + TypeScript
 - **TailwindCSS 4** + Linear UI 风格主题
@@ -22,79 +24,79 @@
 - **framer-motion** - 动画
 - **Turborepo** + pnpm monorepo
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### Prerequisites
+### 环境要求
 
 - Node.js >= 20
 - pnpm >= 10
 
-### Setup
+### 安装与配置
 
 ```bash
-# Install dependencies
+# 安装依赖
 pnpm install
 
-# Configure environment
+# 配置环境变量
 cp apps/web/.env.example apps/web/.env.local
-# Edit .env.local with your Notion credentials
+# 编辑 .env.local，填入 Notion 相关配置
 ```
 
-### Environment Variables
+### 环境变量
 
-| Variable               | Description                              |
-| ---------------------- | ---------------------------------------- |
-| `NOTION_TOKEN`         | Notion Integration Token                 |
-| `NOTION_DATABASE_ID`   | Notion Database ID                       |
-| `LOCK_PASSWORD`        | Access password (leave empty to disable) |
-| `NEXT_PUBLIC_LANGUAGE` | UI Language (zh / en)                    |
+| 变量名                 | 说明                     |
+| ---------------------- | ------------------------ |
+| `NOTION_TOKEN`         | Notion Integration Token |
+| `NOTION_DATABASE_ID`   | Notion Database ID       |
+| `LOCK_PASSWORD`        | 访问密码（留空则不启用） |
+| `NEXT_PUBLIC_LANGUAGE` | UI 语言（`zh` / `en`）   |
 
-### Notion Database Schema
+### Notion 数据库结构
 
-Create a Notion database with these properties:
+请在 Notion 中创建数据库，并配置以下属性：
 
-| Property        | Type      | Description                                             |
-| --------------- | --------- | ------------------------------------------------------- |
-| Name            | title     | 订阅名称                                                |
-| Icon            | url       | 图标 URL                                                |
-| Price           | number    | 价格                                                    |
-| Currency        | select    | 货币 (CNY / USD)                                        |
-| Cycle           | select    | 周期 (monthly / quarterly / yearly / one-time / custom) |
-| CustomCycleDays | number    | 自定义周期天数                                          |
-| StartDate       | date      | 开始时间                                                |
-| EndDate         | date      | 结束时间                                                |
-| Description     | rich_text | 描述                                                    |
-| Category        | select    | 分类                                                    |
-| Position        | number    | 排序位置                                                |
-| Color           | select    | 品牌色                                                  |
+| 字段名          | 类型      | 说明                                                     |
+| --------------- | --------- | -------------------------------------------------------- |
+| Name            | title     | 订阅名称                                                 |
+| Icon            | url       | 图标 URL                                                 |
+| Price           | number    | 价格                                                     |
+| Currency        | select    | 货币（CNY / USD）                                        |
+| Cycle           | select    | 周期（monthly / quarterly / yearly / one-time / custom） |
+| CustomCycleDays | number    | 自定义周期天数                                           |
+| StartDate       | date      | 开始时间                                                 |
+| EndDate         | date      | 结束时间                                                 |
+| Description     | rich_text | 描述                                                     |
+| Category        | select    | 分类                                                     |
+| Position        | number    | 排序位置                                                 |
+| Color           | select    | 品牌色                                                   |
 
-### Development
+### 开发命令
 
 ```bash
-pnpm dev        # Start dev server
-pnpm build      # Production build
-pnpm lint       # Lint check
+pnpm dev        # 启动开发环境
+pnpm build      # 生产构建
+pnpm lint       # 代码检查
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+访问 `http://localhost:3000`
 
-## � Project Structure
+## 🗂️ 项目结构
 
 ```text
 m-wallet/
-├── apps/web/                # Next.js application
-│   ├── app/                 # Pages (/, /stats, /new, /settings)
-│   ├── components/          # UI components
+├── apps/web/                # Next.js 应用
+│   ├── app/                 # 页面（/, /stats, /new, /settings）
+│   ├── components/          # UI 组件
 │   ├── lib/
-│   │   ├── actions/         # Server Actions (subscriptions, auth)
-│   │   ├── notion.ts        # Notion client
-│   │   ├── services.ts      # 55+ preset services
-│   │   └── types.ts         # TypeScript types
-│   └── config/              # Site config
+│   │   ├── actions/         # Server Actions（订阅、鉴权等）
+│   │   ├── notion.ts        # Notion 客户端
+│   │   ├── services.ts      # 55+ 预置服务
+│   │   └── types.ts         # TypeScript 类型
+│   └── config/              # 站点配置
 ├── packages/
-│   ├── ui/                  # Shared UI (shadcn/ui)
-│   ├── eslint-config/       # ESLint config
-│   └── typescript-config/   # TypeScript config
+│   ├── ui/                  # 共享 UI（shadcn/ui）
+│   ├── eslint-config/       # ESLint 配置
+│   └── typescript-config/   # TypeScript 配置
 ```
 
 ## 📄 License
