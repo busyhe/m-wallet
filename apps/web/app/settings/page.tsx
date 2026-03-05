@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Moon, Sun, LogOut, Shield, Palette, GripVertical, ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import { Moon, Sun, LogOut, Shield, Palette, GripVertical, ArrowDown, ArrowUp, ArrowUpDown, Github } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useSortMode } from '@/lib/hooks/use-sort-mode'
 import { logout } from '@/lib/actions/auth'
@@ -136,10 +136,21 @@ export default function SettingsPage() {
         {/* About */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <h3 className="text-xs font-medium text-muted-foreground mb-2 px-1">{t('settings.about')}</h3>
-          <div className="rounded-xl bg-card border border-border/50 p-4">
-            <p className="text-sm text-foreground font-medium">Wallet</p>
-            <p className="text-xs text-muted-foreground mt-1">{t('settings.aboutDesc')}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">v{version}</p>
+          <div className="rounded-xl bg-card border border-border/50 overflow-hidden">
+            <div className="p-4">
+              <p className="text-sm text-foreground font-medium">Wallet</p>
+              <p className="text-xs text-muted-foreground mt-1">{t('settings.aboutDesc')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">v{version}</p>
+            </div>
+            <a
+              href="https://github.com/busyhe/m-wallet"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 text-sm text-foreground hover:bg-secondary/50 transition-colors border-t border-border/30"
+            >
+              <Github className="w-4 h-4 text-muted-foreground" />
+              <span>GitHub</span>
+            </a>
           </div>
         </motion.div>
       </div>
