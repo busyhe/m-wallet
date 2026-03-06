@@ -138,6 +138,8 @@ export const translations = {
     'cycle.weekly': 'Weekly',
     'cycle.daily': 'Daily',
     'cycle.oneTime': 'One-time',
+    'cycle.one-time': 'One-time',
+    'cycle.custom': 'Custom',
 
     // Not Found
     'notfound.title': 'Page Not Found',
@@ -289,6 +291,8 @@ export const translations = {
     'cycle.weekly': '周付',
     'cycle.daily': '日付',
     'cycle.oneTime': '买断',
+    'cycle.one-time': '买断',
+    'cycle.custom': '自定义',
 
     // Not Found
     'notfound.title': '页面未找到',
