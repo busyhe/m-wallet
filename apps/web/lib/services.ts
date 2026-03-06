@@ -24,6 +24,11 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: '腾讯视频', icon: '', category: '影音', color: '#FF6A10' },
   { name: '芒果TV', icon: '', category: '影音', color: '#FF7F00' },
   { name: '喜马拉雅', icon: '', category: '影音', color: '#F55B23' },
+  { name: 'Crunchyroll', icon: SI('crunchyroll'), category: '影音', color: '#F47521' },
+  { name: 'Deezer', icon: SI('deezer'), category: '影音', color: '#FEAA2D' },
+  { name: 'SoundCloud', icon: SI('soundcloud'), category: '影音', color: '#FF5500' },
+  { name: 'Peacock', icon: '', category: '影音', color: '#000000' },
+  { name: 'Mubi', icon: '', category: '影音', color: '#001A32' },
 
   // Cloud & Storage
   { name: 'iCloud+', icon: SI('icloud'), category: '云存储', color: '#3693F3' },
@@ -44,6 +49,9 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: '飞书', icon: '', category: '效率', color: '#3370FF' },
   { name: '钉钉', icon: SI('dingtalk'), category: '效率', color: '#007FFF' },
   { name: 'WPS', icon: '', category: '效率', color: '#D4232A' },
+  { name: 'Obsidian', icon: SI('obsidian'), category: '效率', color: '#483699' },
+  { name: 'Bear', icon: '', category: '效率', color: '#D9534F' },
+  { name: 'Things', icon: '', category: '效率', color: '#4A90D9' },
 
   // Design
   { name: 'Figma', icon: SI('figma'), category: '设计', color: '#F24E1E' },
@@ -51,6 +59,15 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: 'Sketch', icon: SI('sketch'), category: '设计', color: '#F7B500' },
   { name: 'Canva', icon: SI('canva'), category: '设计', color: '#00C4CC' },
   { name: 'Framer', icon: SI('framer'), category: '设计', color: '#0055FF' },
+
+  // Photography
+  { name: 'VSCO', icon: SI('vsco'), category: '摄影', color: '#000000' },
+  { name: '醒图', icon: '', category: '摄影', color: '#FF4D6A' },
+  { name: 'Lightroom', icon: SI('adobelightroom'), category: '摄影', color: '#31A8FF' },
+  { name: 'Snapseed', icon: '', category: '摄影', color: '#4CAF50' },
+  { name: 'NOMO CAM', icon: '', category: '摄影', color: '#000000' },
+  { name: 'Lensa', icon: '', category: '摄影', color: '#6C5CE7' },
+  { name: 'Darkroom', icon: '', category: '摄影', color: '#000000' },
 
   // Development
   { name: 'GitHub Copilot', icon: SI('github-copilot'), category: '开发', color: '#000000' },
@@ -71,6 +88,8 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: 'Perplexity', icon: SI('perplexity'), category: 'AI', color: '#20808D' },
   { name: 'Copilot Pro', icon: SI('microsoft'), category: 'AI', color: '#0078D4' },
   { name: 'Runway', icon: '', category: 'AI', color: '#000000' },
+  { name: 'Poe', icon: '', category: 'AI', color: '#5B4FF5' },
+  { name: 'Suno', icon: '', category: 'AI', color: '#000000' },
 
   // Social & Communication
   { name: 'X Premium', icon: SI('x'), category: '社交', color: '#000000' },
@@ -86,6 +105,8 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: 'Cloudflare', icon: SI('cloudflare'), category: '安全', color: '#F38020' },
   { name: 'Surfshark', icon: SI('surfshark'), category: '安全', color: '#178BF1' },
   { name: 'Bitwarden', icon: SI('bitwarden'), category: '安全', color: '#175DDC' },
+  { name: 'ProtonVPN', icon: SI('protonvpn'), category: '安全', color: '#66DEB1' },
+  { name: 'Mullvad VPN', icon: '', category: '安全', color: '#44999A' },
 
   // Gaming
   { name: 'Xbox Game Pass', icon: SI('xbox'), category: '游戏', color: '#107C10' },
@@ -102,6 +123,9 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: '得到', icon: '', category: '阅读', color: '#E8A435' },
   { name: 'Duolingo', icon: SI('duolingo'), category: '学习', color: '#58CC02' },
   { name: '中国大学MOOC', icon: '', category: '学习', color: '#C02C38' },
+  { name: 'Coursera', icon: SI('coursera'), category: '学习', color: '#0056D2' },
+  { name: 'Udemy', icon: SI('udemy'), category: '学习', color: '#A435F0' },
+  { name: 'MasterClass', icon: '', category: '学习', color: '#000000' },
 
   // Life & Shopping
   { name: 'Amazon Prime', icon: SI('amazon'), category: '生活', color: '#FF9900' },
@@ -109,11 +133,16 @@ export const PRESET_SERVICES: PresetService[] = [
   { name: '淘宝88VIP', icon: '', category: '生活', color: '#FF5000' },
   { name: '美团神会员', icon: '', category: '生活', color: '#FFD100' },
   { name: '饿了么会员', icon: '', category: '生活', color: '#0097FF' },
+  { name: '拼多多', icon: '', category: '生活', color: '#E02E24' },
+  { name: '滴滴出行', icon: '', category: '生活', color: '#FF6611' },
 
   // Health & Wellness
   { name: 'Strava', icon: SI('strava'), category: '健康', color: '#FC4C02' },
   { name: 'Calm', icon: '', category: '健康', color: '#5098E6' },
   { name: 'Headspace', icon: '', category: '健康', color: '#F47D31' },
+  { name: 'Nike Training', icon: SI('nike'), category: '健康', color: '#111111' },
+  { name: 'Keep', icon: '', category: '健康', color: '#00D084' },
+  { name: 'Fitbod', icon: '', category: '健康', color: '#FC4C02' },
 
   // Domains & Hosting
   { name: 'Cloudflare Domain', icon: SI('cloudflare'), category: '域名', color: '#F38020' },

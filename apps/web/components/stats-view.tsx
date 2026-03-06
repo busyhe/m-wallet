@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Subscription } from '@/lib/types'
-import { getCostInPeriod, formatPrice } from '@/lib/subscription-utils'
+import { getCostInPeriod, formatPrice, getCycleLabel } from '@/lib/subscription-utils'
 import { StatsCard } from './stats-card'
 import { BarChart } from './bar-chart'
+import { ServiceIcon } from './service-icon'
 import {
   startOfMonth as startOfMonthFn,
   endOfMonth as endOfMonthFn,
@@ -29,6 +30,7 @@ interface StatsViewProps {
 
 export function StatsView({ subscriptions }: StatsViewProps) {
   const [period, setPeriod] = useState<StatsPeriod>('monthly')
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const now = useMemo(() => new Date(), [])
   const { t, lang } = useTranslation()
   const dateLocale = lang === 'en' ? enUS : zhCN
@@ -44,7 +46,6 @@ export function StatsView({ subscriptions }: StatsViewProps) {
     const totalAll = subscriptions.reduce((sum, s) => sum + getCostInPeriod(s, beginningOfTime, now), 0)
 
     // Group by category based on selected period
-    const byCategory = new Map<string, number>()
     const [periodStart, periodEnd] =
       period === 'monthly'
         ? [startOfMonth, endOfMonth]
@@ -52,17 +53,26 @@ export function StatsView({ subscriptions }: StatsViewProps) {
           ? [startOfYear, now]
           : [beginningOfTime, now]
 
+    // Track subscriptions per category with their amounts
+    const byCategorySubs = new Map<string, { amount: number; subs: { sub: Subscription; amount: number }[] }>()
     subscriptions.forEach((s) => {
       const cat = s.category || t('category.other')
       const amount = getCostInPeriod(s, periodStart, periodEnd)
       if (amount > 0) {
-        byCategory.set(cat, (byCategory.get(cat) || 0) + amount)
+        const entry = byCategorySubs.get(cat) || { amount: 0, subs: [] }
+        entry.amount += amount
+        entry.subs.push({ sub: s, amount })
+        byCategorySubs.set(cat, entry)
       }
     })
 
-    const categories = Array.from(byCategory.entries())
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, amount]) => ({ name, amount }))
+    const categories = Array.from(byCategorySubs.entries())
+      .sort((a, b) => b[1].amount - a[1].amount)
+      .map(([name, data]) => ({
+        name,
+        amount: data.amount,
+        subs: data.subs.sort((a, b) => b.amount - a.amount)
+      }))
 
     const activeCount = subscriptions.filter((s) => {
       if (s.cycle === 'one-time') return true
@@ -171,7 +181,10 @@ export function StatsView({ subscriptions }: StatsViewProps) {
         {periods.map((p) => (
           <button
             key={p.key}
-            onClick={() => setPeriod(p.key)}
+            onClick={() => {
+              setPeriod(p.key)
+              setExpandedCategory(null)
+            }}
             className={`relative flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${
               period === p.key ? 'text-foreground' : 'text-muted-foreground'
             }`}
@@ -235,6 +248,7 @@ export function StatsView({ subscriptions }: StatsViewProps) {
           {stats.categories.map((cat, i) => {
             const percentage = totalAmount > 0 ? (cat.amount / totalAmount) * 100 : 0
             const percentageStr = percentage > 0 && percentage < 0.1 ? '<0.1%' : `${percentage.toFixed(1)}%`
+            const isExpanded = expandedCategory === cat.name
 
             return (
               <motion.div
@@ -243,21 +257,78 @@ export function StatsView({ subscriptions }: StatsViewProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
               >
-                <div className="flex items-center justify-between text-sm mb-1.5">
-                  <span className="text-foreground">{cat.name}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground tabular-nums">{formatPrice(cat.amount)}</span>
-                    <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">{percentageStr}</span>
+                {/* Clickable category header */}
+                <button className="w-full text-left" onClick={() => setExpandedCategory(isExpanded ? null : cat.name)}>
+                  <div className="flex items-center justify-between text-sm mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <motion.svg
+                        animate={{ rotate: isExpanded ? 90 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-muted-foreground"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </motion.svg>
+                      <span className="text-foreground">{cat.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground tabular-nums">{formatPrice(cat.amount)}</span>
+                      <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">
+                        {percentageStr}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${maxCategoryAmount > 0 ? (cat.amount / maxCategoryAmount) * 100 : 0}%` }}
-                    transition={{ duration: 0.6, delay: 0.2 + i * 0.05, ease: 'easeOut' }}
-                    className="h-full rounded-full bg-primary"
-                  />
-                </div>
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${maxCategoryAmount > 0 ? (cat.amount / maxCategoryAmount) * 100 : 0}%` }}
+                      transition={{ duration: 0.6, delay: 0.2 + i * 0.05, ease: 'easeOut' }}
+                      className="h-full rounded-full bg-primary"
+                    />
+                  </div>
+                </button>
+
+                {/* Accordion detail: subscription list */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-2.5 ml-1 divide-y divide-border/40">
+                        {cat.subs.map(({ sub, amount }) => (
+                          <div key={sub.id} className="flex items-center gap-3 py-2 px-1">
+                            <div
+                              className="shrink-0 flex items-center justify-center w-7 h-7 rounded-lg"
+                              style={{ backgroundColor: `${sub.color}15` }}
+                            >
+                              <ServiceIcon icon={sub.icon} name={sub.name} color={sub.color} size={14} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-xs font-medium text-foreground truncate block">{sub.name}</span>
+                            </div>
+                            <div className="shrink-0 flex items-center gap-1.5">
+                              <span className="text-xs font-medium text-foreground tabular-nums">
+                                {formatPrice(amount)}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">/{getCycleLabel(sub.cycle)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )
           })}
