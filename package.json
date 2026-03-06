@@ -1,7 +1,7 @@
 {
   "name": "m-wallet",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "build": "turbo build",
     "changeset": "pnpm exec changeset",
