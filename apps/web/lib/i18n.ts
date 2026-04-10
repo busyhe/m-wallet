@@ -86,6 +86,7 @@ export const translations = {
     'common.daysAfter': 'days after',
     'common.expired': 'Expired',
     'common.oneTime': 'One-time',
+    'common.expiresAt': 'Expires',
 
     // Cycle Short
     'cycle.short.monthly': 'M',
@@ -239,6 +240,7 @@ export const translations = {
     'common.daysAfter': '天后',
     'common.expired': '已到期',
     'common.oneTime': '一次性',
+    'common.expiresAt': '到期',
 
     // Cycle Short
     'cycle.short.monthly': '月',

@@ -33,16 +33,47 @@ export function getNextBillingDate(sub: Subscription): Date | null {
   return next
 }
 
+// Check if a subscription is expired
+export function isExpired(sub: Subscription): boolean {
+  if (sub.cycle === 'one-time') return false
+  const now = new Date()
+  if (sub.endDate && isAfter(now, new Date(sub.endDate))) return true
+  return getNextBillingDate(sub) === null
+}
+
+// Format date based on cycle type (yearly includes year)
+function formatDateByCycle(date: Date, cycle: SubscriptionCycle): string {
+  if (cycle === 'yearly' || cycle === 'quarterly') {
+    return format(date, 'yyyy/MM/dd')
+  }
+  return format(date, 'MM/dd')
+}
+
 // Format next billing date display
 export function formatNextBilling(sub: Subscription): string {
   if (sub.cycle === 'one-time') return t('common.oneTime')
+
+  // Expired subscription
+  if (isExpired(sub)) {
+    if (sub.endDate) {
+      return `${formatDateByCycle(new Date(sub.endDate), sub.cycle)} ${t('common.expired')}`
+    }
+    return t('common.expired')
+  }
+
+  // Has end date → show expiry info
+  if (sub.endDate) {
+    return `${t('common.expiresAt')} ${formatDateByCycle(new Date(sub.endDate), sub.cycle)}`
+  }
+
+  // No end date → show next renewal
   const next = getNextBillingDate(sub)
   if (!next) return t('common.expired')
   const days = differenceInDays(next, new Date())
   if (days === 0) return t('common.today')
   if (days === 1) return t('common.tomorrow')
   if (days <= 7) return `${days}${t('common.daysAfter')}`
-  return format(next, 'MM/dd')
+  return formatDateByCycle(next, sub.cycle)
 }
 
 // Get all billing dates for a subscription within a date range

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import type { Subscription } from '@/lib/types'
-import { formatPrice, formatNextBilling, getCycleLabel } from '@/lib/subscription-utils'
+import { formatPrice, formatNextBilling, getCycleLabel, isExpired } from '@/lib/subscription-utils'
 import { ServiceIcon } from './service-icon'
 
 interface SubscriptionCardProps {
@@ -14,6 +14,7 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({ subscription, onClick, index = 0 }: SubscriptionCardProps) {
   const { name, icon, price, currency, cycle, color } = subscription
   const nextBilling = formatNextBilling(subscription)
+  const expired = isExpired(subscription)
 
   return (
     <motion.div
@@ -28,11 +29,11 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
       whileHover={{ y: -2, transition: { duration: 0.2 } }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="group flex items-center gap-3.5 p-3.5 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-md transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer"
+      className={`group flex items-center gap-3.5 p-3.5 rounded-xl bg-card border border-border/50 hover:border-border hover:shadow-md transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer ${expired ? 'bg-muted/60' : ''}`}
     >
       {/* Service icon */}
       <div
-        className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg"
+        className={`flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg ${expired ? 'grayscale opacity-40' : ''}`}
         style={{ backgroundColor: `${color}15` }}
       >
         <ServiceIcon icon={icon} name={name} color={color} size={20} />
@@ -40,7 +41,9 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate">{name}</p>
+        <p className={`text-sm font-medium truncate ${expired ? 'text-muted-foreground/50' : 'text-foreground'}`}>
+          {name}
+        </p>
         {subscription.bundledServices && subscription.bundledServices.length > 0 ? (
           <div className="flex items-center mt-1 -space-x-1.5">
             {subscription.bundledServices.slice(0, 5).map((bs, i) => (
@@ -60,14 +63,20 @@ export function SubscriptionCard({ subscription, onClick, index = 0 }: Subscript
             )}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground mt-0.5">{nextBilling}</p>
+          <p className="text-xs text-muted-foreground mt-0.5"></p>
         )}
       </div>
 
       {/* Price */}
       <div className="flex-shrink-0 text-right">
-        <p className="text-sm font-semibold text-foreground">{formatPrice(price, currency)}</p>
-        <p className="text-[10px] text-muted-foreground">/{getCycleLabel(cycle)}</p>
+        <p className={`text-sm font-semibold ${expired ? 'text-muted-foreground/50' : 'text-foreground'}`}>
+          {formatPrice(price, currency)}
+          <span className={`text-[10px] ${expired ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>
+            {' '}
+            /{getCycleLabel(cycle)}
+          </span>
+        </p>
+        <p className={`text-[10px] ${expired ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>{nextBilling}</p>
       </div>
     </motion.div>
   )
