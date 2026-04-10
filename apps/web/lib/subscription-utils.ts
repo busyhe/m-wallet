@@ -89,7 +89,7 @@ export function getBillingDatesInPeriod(sub: Subscription, start: Date, end: Dat
 
   let current = startDate
   while (current <= end) {
-    if (endDate && current > endDate) break
+    if (endDate && current >= endDate) break
 
     if (current >= start) {
       dates.push(new Date(current))
